@@ -1,0 +1,36 @@
+{
+
+  "logIn": "Log in",
+  "logInToYourAccount": "Log in to your account",
+  "userName": "User Name",
+  "passWord": "Password",
+  "signUp": "Sign Up",
+  "signUpToYourAccount": "Sign up to your account",
+  "studentName": "Student Name",
+  "studentNumber": "Student Number",
+  "confirmPassword": "Confirm Password",
+  "name": "Name",
+  "accountId": "Account ID :",
+  "accountNumber": "12545214321",
+  "scoreAnalytics": "Score analytics",
+  "smile": "Smile",
+  "bow": "Bow",
+  "greet":"Greet",
+  "lifeVest": "Life Vest",
+  "oxygenMask": "Oxygen Mask",
+  "saltBelt": "Salt Belt",
+  "emExit": "EM Exit",
+  "safetyNote": "Safety Note",
+  "back": "Back",
+  "no": "NO",
+  "time": "Time",
+  "category":"Category",
+  "wrongActionPicture": "Wrong Action Picture",
+  "score":"Score",
+  "round": "Round"
+
+
+
+
+
+}
