@@ -13,6 +13,8 @@ import '../constants/color_constants.dart';
 import '../constants/decoration.dart';
 import '../constants/route_constants.dart';
 import '../constants/validations.dart';
+import '../enum/viewstate.dart';
+import '../helper/dialog_helper.dart';
 import '../helper/keyboard_helper.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -84,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             right: DimensionConstants.d242.w,
-                            left: DimensionConstants.d86.w),
+                            left: DimensionConstants.d70.w),
                         child: Text("logIn".tr()).boldText(
                             ColorConstants.primaryColor,
                             DimensionConstants.d30.sp,
@@ -93,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             right: DimensionConstants.d138.w,
-                            left: DimensionConstants.d80.w),
+                            left: DimensionConstants.d65.w),
                         child: Text("logInToYourAccount".tr()).regularText(
                             ColorConstants.lightGrayColor,
                             DimensionConstants.d18.sp,
@@ -130,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 "userName".tr(),
                                 ColorConstants.lightGrayColor,
                               ),
-                              validator: (value) {
+                              /* validator: (value) {
                                 if (value!.trim().isEmpty) {
                                   return 'Empty email';
                                 } else if (!Validations.emailValidation(
@@ -139,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 } else {
                                   return null;
                                 }
-                              },
+                              },*/
                             ),
                           ],
                         ),
@@ -208,47 +210,73 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         height: DimensionConstants.d22.h,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          provider
-                              .login(
-                                  context,
-                                  provider.userNameController.text.trim(),
-                                  provider.passwordController.text.trim())
-                              .then((value) {
-                            if (value) {}
-                          });
-                          /* if (provider.formKey.currentState!.validate()) {
+                      Padding(
+                        padding: EdgeInsets.only(left: DimensionConstants.d0.w),
+                        child: provider.state == ViewState.Busy
+                            ? const CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    ColorConstants.primaryColor))
+                            : GestureDetector(
+                                onTap: () {
+                                  if (provider
+                                      .userNameController.text.isEmpty) {
+                                    DialogHelper.showMessage(
+                                        context, 'Please enter username');
+                                  } else if (provider
+                                      .passwordController.text.isEmpty) {
+                                    DialogHelper.showMessage(
+                                        context, 'Please enter your password');
+                                  } else if (provider.formKey.currentState!
+                                          .validate()
+
+                                      /*provider
+                                          .userNameController.text.isNotEmpty &&
+                                      provider
+                                          .passwordController.text.isNotEmpty*/
+                                      ) {
+                                    KeyboardHelper.hideKeyboard(context);
+                                    provider
+                                        .login(
+                                            context,
+                                            provider.userNameController.text,
+                                            provider.passwordController.text)
+                                        .then((value) {
+                                      if (value) {}
+                                    });
+                                  }
+
+                                  /* if (provider.formKey.currentState!.validate()) {
                             KeyboardHelper.hideKeyboard(context);
 
                           }*/
-                        },
-                        child: CustomShape(
-                          bgColor: ColorConstants.primaryColor,
-                          height: DimensionConstants.d51.h,
-                          width: DimensionConstants.d290.w,
-                          radius: const BorderRadius.all(
-                            Radius.circular(DimensionConstants.d10),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: DimensionConstants.d19.w),
-                                child: Text("logIn".tr()).regularText(
-                                    ColorConstants.whiteColor,
-                                    DimensionConstants.d20.sp,
-                                    TextAlign.left),
+                                },
+                                child: CustomShape(
+                                  bgColor: ColorConstants.primaryColor,
+                                  height: DimensionConstants.d51.h,
+                                  width: DimensionConstants.d290.w,
+                                  radius: const BorderRadius.all(
+                                    Radius.circular(DimensionConstants.d10),
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: DimensionConstants.d19.w),
+                                        child: Text("logIn".tr()).regularText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.left),
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d170.w,
+                                      ),
+                                      const ImageView(
+                                        path: ImagesConstants.arrowIcon,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              SizedBox(
-                                width: DimensionConstants.d170.w,
-                              ),
-                              const ImageView(
-                                path: ImagesConstants.arrowIcon,
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                       SizedBox(
                         height: DimensionConstants.d10.h,

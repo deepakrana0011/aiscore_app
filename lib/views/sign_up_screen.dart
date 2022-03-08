@@ -1,7 +1,9 @@
 import 'package:ai_score/constants/color_constants.dart';
 import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/constants/image_constants.dart';
+import 'package:ai_score/enum/viewstate.dart';
 import 'package:ai_score/extensions/allextensions.dart';
+import 'package:ai_score/helper/dialog_helper.dart';
 import 'package:ai_score/provider/signup_provider.dart';
 import 'package:ai_score/views/base_view.dart';
 import 'package:ai_score/widgets/image_view.dart';
@@ -319,48 +321,119 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       SizedBox(
                                         height: DimensionConstants.d20.h,
                                       ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (provider.formKey.currentState!
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: DimensionConstants.d0.w),
+                                        child: provider.state == ViewState.Busy
+                                            ? const CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        ColorConstants
+                                                            .primaryColor))
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  if (provider
+                                                      .studentNumberController
+                                                      .text
+                                                      .isEmpty) {
+                                                    DialogHelper.showMessage(
+                                                        context,
+                                                        "please enter Student Name ");
+                                                  } else if (provider
+                                                      .studentNumberController
+                                                      .text
+                                                      .isEmpty) {
+                                                    DialogHelper.showMessage(
+                                                        context,
+                                                        "please enter Student number ");
+                                                  } else if (provider
+                                                      .passwordController
+                                                      .text
+                                                      .isEmpty) {
+                                                    DialogHelper.showMessage(
+                                                        context,
+                                                        "Enter your password");
+                                                  } else if (provider
+                                                      .formKey.currentState!
+                                                      .validate()) {
+                                                    KeyboardHelper.hideKeyboard(
+                                                        context);
+                                                    /*provider
+                                                          .studentNameController
+                                                          .text
+                                                          .isNotEmpty &&
+                                                      provider
+                                                          .studentNumberController
+                                                          .text
+                                                          .isNotEmpty &&
+                                                      provider
+                                                          .passwordController
+                                                          .text
+                                                          .isNotEmpty*/
+                                                    provider.signUp(
+                                                        context,
+                                                        provider
+                                                            .studentNumberController
+                                                            .text,
+                                                        provider
+                                                            .studentNumberController
+                                                            .text,
+                                                        provider
+                                                            .passwordController
+                                                            .text);
+                                                  }
+                                                  ;
+
+                                                  /* if (provider.formKey.currentState!
                                               .validate()) {
                                             KeyboardHelper.hideKeyboard(
                                                 context);
                                             Navigator.of(context).pushNamed(
                                                 RoutesConstants.categoryScreen);
-                                          }
-                                        },
-                                        child: CustomShape(
-                                          bgColor: ColorConstants.primaryColor,
-                                          height: DimensionConstants.d51.h,
-                                          width: DimensionConstants.d290.w,
-                                          radius: const BorderRadius.all(
-                                            Radius.circular(
-                                                DimensionConstants.d10),
-                                          ),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: DimensionConstants
-                                                        .d19.w),
-                                                child: Text("signUp".tr())
-                                                    .regularText(
-                                                        ColorConstants
-                                                            .whiteColor,
-                                                        DimensionConstants
-                                                            .d20.sp,
-                                                        TextAlign.left),
+                                          }*/
+                                                },
+                                                child: CustomShape(
+                                                  bgColor: ColorConstants
+                                                      .primaryColor,
+                                                  height:
+                                                      DimensionConstants.d51.h,
+                                                  width:
+                                                      DimensionConstants.d290.w,
+                                                  radius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(
+                                                        DimensionConstants.d10),
+                                                  ),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                            left:
+                                                                DimensionConstants
+                                                                    .d19.w),
+                                                        child: Text(
+                                                                "signUp".tr())
+                                                            .regularText(
+                                                                ColorConstants
+                                                                    .whiteColor,
+                                                                DimensionConstants
+                                                                    .d20.sp,
+                                                                TextAlign.left),
+                                                      ),
+                                                      SizedBox(
+                                                        width:
+                                                            DimensionConstants
+                                                                .d160.w,
+                                                      ),
+                                                      const ImageView(
+                                                        path: ImagesConstants
+                                                            .arrowIcon,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
-                                              SizedBox(
-                                                width:
-                                                    DimensionConstants.d160.w,
-                                              ),
-                                              const ImageView(
-                                                path: ImagesConstants.arrowIcon,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
                                       ),
                                       SizedBox(
                                         height: DimensionConstants.d10.h,

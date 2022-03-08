@@ -45,9 +45,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: "Dog App",
           onGenerateRoute: router.Router.generateRoute,
-          initialRoute: SharedPref.prefs?.getString(SharedPref.TOKEN) == null
+          initialRoute: SharedPref.prefs?.getString(SharedPref.USERNAME) == null
               ? RoutesConstants.logInScreen
-              : RoutesConstants.scoreAnalytics,
+              : RoutesConstants.categoryScreen,
           builder: (context, widget) {
             ScreenUtil.setContext(context);
             return MediaQuery(

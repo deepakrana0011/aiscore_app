@@ -12,4 +12,5 @@ class ImagesConstants {
   static const festival = "images/festival.png";
   static const clipPath = "images/clipPath.png";
   static const imageCamera = "images/camera.png";
+  static const signOut = "images/signOut.png";
 }

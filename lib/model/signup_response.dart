@@ -1,15 +1,15 @@
-class LoginResponse {
+class SignUpResponse {
   bool success;
   String message;
   Data? data;
 
-  LoginResponse({
+  SignUpResponse({
     required this.success,
     required this.message,
     required this.data,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
+  factory SignUpResponse.fromJson(Map<String, dynamic> json) => SignUpResponse(
         success: json["success"],
         message: json["message"],
         data: json["data"] != null ? Data.fromJson(json["data"]) : null,
@@ -28,7 +28,8 @@ class Data {
   String studentNo;
   int status;
   int v;
-  String token;
+
+  String ID;
 
   Data(
       {required this.id,
@@ -36,7 +37,7 @@ class Data {
       required this.studentNo,
       required this.status,
       required this.v,
-      required this.token});
+      required this.ID});
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
       id: json["_id"],
@@ -44,7 +45,7 @@ class Data {
       studentNo: json["studentNo"],
       status: json["status"],
       v: json["__v"],
-      token: json["token"]);
+      ID: json['id']);
 
   Map<String, dynamic> toJson() => {
         "_id": id,
@@ -52,6 +53,6 @@ class Data {
         "studentNo": studentNo,
         "status": status,
         "__v": v,
-        "token": token
+        "id": ID,
       };
 }

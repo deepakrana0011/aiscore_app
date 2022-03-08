@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ai_score/constants/color_constants.dart';
 import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/extensions/allextensions.dart';
@@ -6,6 +8,7 @@ import 'package:ai_score/views/base_view.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera/flutter_camera.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -24,7 +27,29 @@ class _SmileScreenState extends State<SmileScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseView<SmileScreenProvider>(
-      onModelReady: (provider) {},
+      onModelReady: (provider) {
+        /// Initialize a periodic timer with 1 second duration
+        provider.timer = Timer.periodic(
+          const Duration(seconds: 1),
+          (timer) {
+            /// callback will be executed every 1 second, increament a count value
+            /// on each callback
+            provider.secondsCount++;
+            if (provider.secondsCount == 60 && provider.minuteCount == 1) {
+              provider.minuteCount = 2;
+              provider.secondsCount = 0;
+              if (provider.secondsCount == 0 && provider.minuteCount == 2) {
+                provider.timer?.cancel();
+              }
+            } else if (provider.secondsCount == 60 &&
+                provider.minuteCount == 0) {
+              provider.secondsCount = 0;
+              provider.minuteCount = 1;
+            }
+            provider.updateData(true);
+          },
+        );
+      },
       builder: (context, provider, _) {
         return Scaffold(
           appBar: KeyboardHelper.appBarWithBackTitle(context, "Smile"),
@@ -73,22 +98,23 @@ class _SmileScreenState extends State<SmileScreen> {
                                 left: DimensionConstants.d13.w,
                                 right: DimensionConstants.d13.w),
                             child: Container(
-                              height: DimensionConstants.d523.h,
-                              width: DimensionConstants.d348.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    DimensionConstants.d15.r),
-                                color: ColorConstants.videoBackGround,
-                              ),
-                              child: CameraPreview(provider.controller!),
-                            ),
+                                height: DimensionConstants.d523.h,
+                                width: DimensionConstants.d348.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      DimensionConstants.d15.r),
+                                  color: ColorConstants.videoBackGround,
+                                ),
+                                child: FlutterCamera(
+                                  color: null,
+                                )),
                           ),
                           SizedBox(
                             height: DimensionConstants.d20.h,
                           ),
                           Container(
                             height: DimensionConstants.d52.h,
-                            width: DimensionConstants.d285.w,
+                            width: DimensionConstants.d250.w,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
                                   DimensionConstants.d10.r),
@@ -110,12 +136,23 @@ class _SmileScreenState extends State<SmileScreen> {
                                 activeFgColor: Colors.white,
                                 inactiveBgColor: ColorConstants.inActiveColor,
                                 inactiveFgColor: Colors.white,
-                                initialLabelIndex: 1,
+                                initialLabelIndex: 0,
                                 totalSwitches: 2,
-                                labels: ["Start", "Stop"],
+                                labels: const ["Start", "Stop"],
                                 radiusStyle: true,
                                 onToggle: (index) {
-                                  if (index == 0) {}
+                                  if (index == 0) {
+                                  } else {
+                                    provider.updateData(true);
+                                    provider.addscore(
+                                      context,
+                                      "1.1",
+                                      provider.minuteCount +
+                                          provider.secondsCount,
+                                    );
+
+                                    provider.dispose();
+                                  }
                                 },
                               ),
                             ),
@@ -157,10 +194,11 @@ class _SmileScreenState extends State<SmileScreen> {
                               top: DimensionConstants.d17.h,
                               left: DimensionConstants.d28.w,
                               bottom: DimensionConstants.d39.h),
-                          child: Text("02 : 11 : 24").boldText(
-                              ColorConstants.whiteColor,
-                              DimensionConstants.d20.sp,
-                              TextAlign.center)),
+                          child: Text(provider.minuteCount.toString() +
+                                  ":" +
+                                  provider.secondsCount.toString())
+                              .boldText(ColorConstants.whiteColor,
+                                  DimensionConstants.d20.sp, TextAlign.center)),
                       Padding(
                           padding: EdgeInsets.only(
                               top: DimensionConstants.d17.h,

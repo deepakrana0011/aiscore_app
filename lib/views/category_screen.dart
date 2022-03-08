@@ -1,6 +1,7 @@
 import 'package:ai_score/constants/color_constants.dart';
 import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/constants/image_constants.dart';
+import 'package:ai_score/constants/route_constants.dart';
 import 'package:ai_score/extensions/allextensions.dart';
 import 'package:ai_score/widgets/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../helper/dialog_helper.dart';
+import '../helper/shared_pref.dart';
 import '../widgets/custom_shape.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -33,6 +36,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
             top: DimensionConstants.d68.h,
             child: Column(
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: DimensionConstants.d348.w),
+                  child: GestureDetector(
+                    onTap: () {
+                      _signOut();
+                    },
+                    child: const ImageView(
+                      path: ImagesConstants.signOut,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(
                       left: DimensionConstants.d19.w,
@@ -69,7 +84,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, RoutesConstants.scoreAnalytics);
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: DimensionConstants.d20.h,
@@ -104,7 +122,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesConstants.smileScreen);
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: DimensionConstants.d10.h,
@@ -389,5 +409,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _signOut() async {
+    SharedPref.clearSharePref();
+
+    Navigator.pushNamed(context, RoutesConstants.logInScreen);
+    DialogHelper.showMessage(context, 'Sign Out successfully');
   }
 }
