@@ -48,12 +48,13 @@ dependencies:
   flutter_custom_clippers: ^2.0.0
   proste_bezier_curve: ^2.0.2
   toggle_switch: ^1.4.0
-  camerawesome: ^0.3.0+1
-  camera: ^0.9.4+14
+
+
   dio: ^4.0.4
   shared_preferences: ^2.0.13
   another_flushbar: ^1.10.28
-  flutter_camera: ^0.1.1
+  camera: ^0.9.4+16
+
 
 dev_dependencies:
   flutter_test:

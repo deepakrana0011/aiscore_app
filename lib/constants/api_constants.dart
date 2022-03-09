@@ -3,5 +3,8 @@ class ApiConstants {
   static const LOGIN = 'login';
   static const REGISTER = 'register';
   static const ADDSCORE = 'addscore';
-  static const GETSCORE = 'getscores/:studentId?category=&sore= ';
+  static const GETSTUDENTID ="getscores/";
+  static const GETSCORE = '?category=&sore= ';
+  static const LASTSCORE ='lastscores/';
+  static const LASTSCOREGET ='?category=';
 }

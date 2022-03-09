@@ -21,7 +21,7 @@ class GetScore {
 class GetScoreData {
   String id;
   String studentId;
-  Double category;
+  double category;
   int testType;
   int time;
   int angleScore;

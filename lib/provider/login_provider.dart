@@ -22,7 +22,7 @@ class LoginProvider extends BaseProvider {
 
   Future<bool> login(
       BuildContext context, String username, String password) async {
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(ViewState.Busy);
     SharedPref.prefs!.setString(SharedPref.USERNAME, username);
 

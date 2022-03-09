@@ -2,19 +2,20 @@ import 'dart:async';
 
 import 'package:ai_score/constants/color_constants.dart';
 import 'package:ai_score/constants/dimension_constants.dart';
+import 'package:ai_score/enum/viewstate.dart';
 import 'package:ai_score/extensions/allextensions.dart';
 import 'package:ai_score/provider/smile_screen_provider.dart';
 import 'package:ai_score/views/base_view.dart';
 import 'package:camera/camera.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_camera/flutter_camera.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../helper/keyboard_helper.dart';
-import '../main.dart';
 
 class SmileScreen extends StatefulWidget {
   const SmileScreen({Key? key}) : super(key: key);
@@ -24,6 +25,10 @@ class SmileScreen extends StatefulWidget {
 }
 
 class _SmileScreenState extends State<SmileScreen> {
+
+  CameraController? controller;
+
+
   @override
   Widget build(BuildContext context) {
     return BaseView<SmileScreenProvider>(
@@ -49,6 +54,8 @@ class _SmileScreenState extends State<SmileScreen> {
             provider.updateData(true);
           },
         );
+
+        provider.getScoreData(context, '1.1');
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -98,16 +105,14 @@ class _SmileScreenState extends State<SmileScreen> {
                                 left: DimensionConstants.d13.w,
                                 right: DimensionConstants.d13.w),
                             child: Container(
-                                height: DimensionConstants.d523.h,
-                                width: DimensionConstants.d348.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      DimensionConstants.d15.r),
-                                  color: ColorConstants.videoBackGround,
-                                ),
-                                child: FlutterCamera(
-                                  color: null,
-                                )),
+                              height: DimensionConstants.d523.h,
+                              width: DimensionConstants.d348.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    DimensionConstants.d15.r),
+                                color: ColorConstants.videoBackGround,
+                              ),
+                            ),
                           ),
                           SizedBox(
                             height: DimensionConstants.d20.h,
@@ -151,7 +156,7 @@ class _SmileScreenState extends State<SmileScreen> {
                                           provider.secondsCount,
                                     );
 
-                                    provider.dispose();
+
                                   }
                                 },
                               ),
@@ -163,66 +168,90 @@ class _SmileScreenState extends State<SmileScreen> {
                 SizedBox(
                   height: DimensionConstants.d20.h,
                 ),
-                Container(
-                  height: DimensionConstants.d82.h,
-                  width: DimensionConstants.d414.w,
-                  color: ColorConstants.primaryColor,
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: DimensionConstants.d20.w,
-                                top: DimensionConstants.d7.h),
-                            child: Text("round".tr()).boldText(
-                                ColorConstants.whiteColor,
-                                DimensionConstants.d20.sp,
-                                TextAlign.center),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: DimensionConstants.d20.w,
-                                top: DimensionConstants.d2.h),
-                            child: Text("4").boldText(ColorConstants.whiteColor,
-                                DimensionConstants.d20.sp, TextAlign.center),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: DimensionConstants.d17.h,
-                              left: DimensionConstants.d28.w,
-                              bottom: DimensionConstants.d39.h),
-                          child: Text(provider.minuteCount.toString() +
-                                  ":" +
-                                  provider.secondsCount.toString())
-                              .boldText(ColorConstants.whiteColor,
-                                  DimensionConstants.d20.sp, TextAlign.center)),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: DimensionConstants.d17.h,
-                              left: DimensionConstants.d28.w,
-                              bottom: DimensionConstants.d43.h),
-                          child: Text("34").boldText(ColorConstants.whiteColor,
-                              DimensionConstants.d20.sp, TextAlign.center)),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: DimensionConstants.d17.h,
-                              left: DimensionConstants.d28.w,
-                              bottom: DimensionConstants.d43.h),
-                          child: Text("10").boldText(ColorConstants.whiteColor,
-                              DimensionConstants.d20.sp, TextAlign.center)),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: DimensionConstants.d17.h,
-                              left: DimensionConstants.d28.w,
-                              bottom: DimensionConstants.d43.h),
-                          child: Text("10").boldText(ColorConstants.whiteColor,
-                              DimensionConstants.d20.sp, TextAlign.center)),
-                    ],
-                  ),
-                )
+                Padding(
+                    padding: EdgeInsets.only(),
+                    child: provider.state == ViewState.Busy
+                        ? const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                ColorConstants.primaryColor))
+                        : Container(
+                            height: DimensionConstants.d82.h,
+                            width: DimensionConstants.d414.w,
+                            color: ColorConstants.primaryColor,
+                            child: Row(
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: DimensionConstants.d20.w,
+                                          top: DimensionConstants.d7.h),
+                                      child: Text("round".tr()).boldText(
+                                          ColorConstants.whiteColor,
+                                          DimensionConstants.d20.sp,
+                                          TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: DimensionConstants.d20.w,
+                                          top: DimensionConstants.d2.h),
+                                      child: Text(provider.round.toString())
+                                          .boldText(
+                                              ColorConstants.whiteColor,
+                                              DimensionConstants.d20.sp,
+                                              TextAlign.center),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d17.h,
+                                        left: DimensionConstants.d50.w,
+                                        bottom: DimensionConstants.d39.h),
+                                    child: Text(provider.minuteCount
+                                                .toString() +
+                                            ":" +
+                                            provider.secondsCount.toString())
+                                        .boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center)),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d17.h,
+                                        left: DimensionConstants.d35.w,
+                                        bottom: DimensionConstants.d43.h),
+                                    child: Text(provider.totalScoreGet[0]
+                                            .toString())
+                                        .boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center)),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d17.h,
+                                        left: DimensionConstants.d35.w,
+                                        bottom: DimensionConstants.d43.h),
+                                    child: Text(provider.totalScoreGet[1]
+                                            .toString())
+                                        .boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center)),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d17.h,
+                                        left: DimensionConstants.d35.w,
+                                        bottom: DimensionConstants.d43.h),
+                                    child: Text(provider.totalScoreGet[2]
+                                            .toString())
+                                        .boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center)),
+                              ],
+                            ),
+                          ))
               ],
             ),
           ),
