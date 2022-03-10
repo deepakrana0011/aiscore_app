@@ -48,8 +48,6 @@ dependencies:
   flutter_custom_clippers: ^2.0.0
   proste_bezier_curve: ^2.0.2
   toggle_switch: ^1.4.0
-
-
   dio: ^4.0.4
   shared_preferences: ^2.0.13
   another_flushbar: ^1.10.28

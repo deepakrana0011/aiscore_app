@@ -284,4 +284,6 @@ class DimensionConstants {
   static const double d520 = 520;
   static const double d518 = 518;
   static const double d516 = 516;
+  static const double d514 = 514;
+  static const double d513 = 513;
 }

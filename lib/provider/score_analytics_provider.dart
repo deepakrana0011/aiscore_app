@@ -24,7 +24,7 @@ class ScoreAnalyticsProvider extends BaseProvider {
   List studentId = [];
   List time = [];
   List totalScore = [];
-  List Category=[];
+  List Category = [];
 
   getCategoryData() {
     var response = CategoryListModel.fromJson(categoryData);
@@ -32,12 +32,7 @@ class ScoreAnalyticsProvider extends BaseProvider {
     categoryDropDownValue = categoryList[0].categoryNumber!;
   }
 
-
-
-
   String? selectScore;
-
-
 
   onSelected(value) {
     categoryDropDownValue = value;
@@ -56,9 +51,6 @@ class ScoreAnalyticsProvider extends BaseProvider {
       var model = await api.getScore(context, category, score);
 
       if (model.success) {
-
-
-
         itemsOfList = model.data;
         for (var element in itemsOfList) {
           id.add(element.id);

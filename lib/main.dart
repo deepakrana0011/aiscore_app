@@ -26,7 +26,7 @@ Future<void> main() async {
           Locale('en'),
         ],
         fallbackLocale: const Locale('en'),
-        child: const MyApp()),
+        child:  MyApp()),
   );
 
   setUpLocator();

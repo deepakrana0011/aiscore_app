@@ -9,6 +9,7 @@ import 'package:ai_score/provider/base_provider.dart';
 import 'package:ai_score/services/FetchDataExpection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/shared_pref.dart';
@@ -21,6 +22,9 @@ class SmileScreenProvider extends BaseProvider {
   List<ScoresList> totalScores = [];
   List totalScoreGet = [];
   int? round;
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 
 
 
@@ -45,7 +49,7 @@ class SmileScreenProvider extends BaseProvider {
     super.dispose();
   }
 
-  Future<bool> addscore(BuildContext context, String category, int time) async {
+  Future<void> addscore(BuildContext context, String category, int time) async {
     setState(ViewState.Busy);
 
     try {
@@ -54,17 +58,17 @@ class SmileScreenProvider extends BaseProvider {
       if (model.success) {
         DialogHelper.showMessage(context, model.message);
         setState(ViewState.Idle);
-        return true;
+
       }
-      return true;
+
     } on FetchDataException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-      return false;
+
     } on SocketException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-      return false;
+
     }
   }
 

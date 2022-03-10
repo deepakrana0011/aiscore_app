@@ -38,7 +38,7 @@ abstract class KeyboardHelper {
           padding: EdgeInsets.fromLTRB(DimensionConstants.d20.w, 0.0, 0.0, 0.0),
           child: Row(
             children: <Widget>[
-              ImageView(
+              const ImageView(
                 path: ImagesConstants.backIcon,
                 color: ColorConstants.whiteColor,
               ),
@@ -64,7 +64,7 @@ abstract class KeyboardHelper {
   }) {
     return AppBar(
       centerTitle: true,
-      title: Text(title),
+      title: Text(title).boldText(ColorConstants.whiteColor, DimensionConstants.d20.sp, TextAlign.center),
       elevation: 0,
       backgroundColor: ColorConstants.primaryColor,
       leadingWidth: 100,

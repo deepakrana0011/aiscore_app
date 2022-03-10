@@ -374,7 +374,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                     provider.signUp(
                                                         context,
                                                         provider
-                                                            .studentNumberController
+                                                            .studentNameController
                                                             .text,
                                                         provider
                                                             .studentNumberController

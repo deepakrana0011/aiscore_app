@@ -51,32 +51,46 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 Padding(
                   padding: EdgeInsets.only(
                       left: DimensionConstants.d19.w,
-                      right: DimensionConstants.d315.w),
+                      right: DimensionConstants.d348.w),
                   child: ImageView(
                     path: ImagesConstants.appIcon,
                     height: DimensionConstants.d80.h,
                     width: DimensionConstants.d72.w,
                   ),
                 ),
+
                 Padding(
+                  padding: EdgeInsets.only(
+                    left: DimensionConstants.d19.w,
+                    right: DimensionConstants.d260.w
+                  ),
+                  child: Row(
+
+                    children:<Widget> [
+                      Text("name".tr()).boldText(ColorConstants.primaryColor,
+                          DimensionConstants.d25.sp, TextAlign.left),
+                      Text(SharedPref.prefs!.getString(SharedPref.studentName).toString()).boldText(ColorConstants.primaryColor,
+                          DimensionConstants.d25.sp, TextAlign.left),
+
+
+                    ],
+                  ),
+                ),
+                /*Padding(
                   padding: EdgeInsets.only(
                       top: DimensionConstants.d19.h,
-                      left: DimensionConstants.d19.w,
-                      right: DimensionConstants.d322.w),
-                  child: Text("name".tr()).boldText(ColorConstants.primaryColor,
-                      DimensionConstants.d25.sp, TextAlign.left),
-                ),
+                ),*/
                 Padding(
                   padding: EdgeInsets.only(
                       left: DimensionConstants.d19.w,
-                      right: DimensionConstants.d94.w),
+                      right: DimensionConstants.d200.w),
                   child: Row(
                     children: <Widget>[
                       Text("accountId".tr()).boldText(
                           ColorConstants.primaryColor,
                           DimensionConstants.d25.sp,
                           TextAlign.left),
-                      Text("accountNumber".tr()).boldText(
+                      Text(SharedPref.prefs!.getString(SharedPref.studentId).toString()).boldText(
                           ColorConstants.primaryColor,
                           DimensionConstants.d25.sp,
                           TextAlign.left),
@@ -92,7 +106,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     padding: EdgeInsets.only(
                         top: DimensionConstants.d20.h,
                         left: DimensionConstants.d20.w,
-                        right: DimensionConstants.d131.w),
+                        right: DimensionConstants.d125.w),
                     child: Material(
                       elevation: 4.0,
                       shadowColor: Colors.black,

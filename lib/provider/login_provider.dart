@@ -14,6 +14,7 @@ import '../services/FetchDataExpection.dart';
 class LoginProvider extends BaseProvider {
   final formKey = GlobalKey<FormState>();
   SaveToken saveToken = locator<SaveToken>();
+  String? studentName;
 
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -35,6 +36,10 @@ class LoginProvider extends BaseProvider {
         if (model.data!.status == 1) {
           SharedPref.prefs?.setString(SharedPref.TOKEN, model.data!.token);
           SharedPref.prefs?.setString(SharedPref.ID, model.data!.id);
+          SharedPref.prefs?.setString(SharedPref.studentName, model.data!.studentName);
+          SharedPref.prefs?.setString(SharedPref.studentId, model.data!.studentNo);
+
+
 
           saveToken.checkLogin = false;
           Navigator.pushNamedAndRemoveUntil(context,

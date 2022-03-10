@@ -12,6 +12,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../helper/shared_pref.dart';
 import '../model/category_list_model.dart';
 
 class ScoreAnalytics extends StatefulWidget {
@@ -64,11 +65,19 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: DimensionConstants.d10.h,
-                    left: DimensionConstants.d20.w,
-                    right: DimensionConstants.d322.w),
-                child: Text("name".tr()).boldText(ColorConstants.primaryColor,
-                    DimensionConstants.d25.sp, TextAlign.left),
+                    left: DimensionConstants.d19.w,
+                    right: DimensionConstants.d200.w),
+                child: Row(
+                  children: <Widget>[
+                    Text("name".tr()).boldText(ColorConstants.primaryColor,
+                        DimensionConstants.d25.sp, TextAlign.left),
+                    Text(SharedPref.prefs!
+                            .getString(SharedPref.studentName)
+                            .toString())
+                        .boldText(ColorConstants.primaryColor,
+                            DimensionConstants.d25.sp, TextAlign.left),
+                  ],
+                ),
               ),
               SizedBox(
                 height: DimensionConstants.d2.h,
@@ -81,10 +90,11 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                   children: <Widget>[
                     Text("accountId".tr()).boldText(ColorConstants.primaryColor,
                         DimensionConstants.d25.sp, TextAlign.left),
-                    Text("accountNumber".tr()).boldText(
-                        ColorConstants.primaryColor,
-                        DimensionConstants.d25.sp,
-                        TextAlign.left),
+                    Text(SharedPref.prefs!
+                            .getString(SharedPref.studentId)
+                            .toString())
+                        .boldText(ColorConstants.primaryColor,
+                            DimensionConstants.d25.sp, TextAlign.left),
                   ],
                 ),
               ),
@@ -201,14 +211,14 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  left: DimensionConstants.d40.w,
-                ),
+                    left: DimensionConstants.d40.w,
+                    right: DimensionConstants.d40.w),
                 child: provider.state == ViewState.Busy
                     ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
                             ColorConstants.primaryColor))
                     : SizedBox(
-                        height: DimensionConstants.d516.h,
+                        height: DimensionConstants.d513.h,
                         width: DimensionConstants.d414.w,
                         child: ListView.builder(
                           shrinkWrap: true,
