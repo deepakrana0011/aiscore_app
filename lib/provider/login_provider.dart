@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ai_score/provider/base_provider.dart';
-import 'package:ai_score/provider/save_token.dart';
+import 'package:ai_score/helper/save_token.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../constants/route_constants.dart';
@@ -23,7 +23,6 @@ class LoginProvider extends BaseProvider {
 
   Future<bool> login(
       BuildContext context, String username, String password) async {
-
     setState(ViewState.Busy);
     SharedPref.prefs!.setString(SharedPref.USERNAME, username);
 
@@ -36,16 +35,17 @@ class LoginProvider extends BaseProvider {
         if (model.data!.status == 1) {
           SharedPref.prefs?.setString(SharedPref.TOKEN, model.data!.token);
           SharedPref.prefs?.setString(SharedPref.ID, model.data!.id);
-          SharedPref.prefs?.setString(SharedPref.studentName, model.data!.studentName);
-          SharedPref.prefs?.setString(SharedPref.studentId, model.data!.studentNo);
-
-
+          SharedPref.prefs
+              ?.setString(SharedPref.studentName, model.data!.studentName);
+          SharedPref.prefs
+              ?.setString(SharedPref.studentId, model.data!.studentNo);
 
           saveToken.checkLogin = false;
           Navigator.pushNamedAndRemoveUntil(context,
               RoutesConstants.categoryScreen, (Route<dynamic> route) => false,
               arguments: true);
         }
+
       } else {
         DialogHelper.showMessage(context, model.message);
         setState(ViewState.Idle);

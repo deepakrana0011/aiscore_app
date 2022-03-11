@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 EdgeInsets.only(top: DimensionConstants.d1.h),
                             child: ImageView(
                               path: ImagesConstants.signUpBack,
-                              height: DimensionConstants.d431.h,
+                              height: DimensionConstants.d442.h,
                               width: DimensionConstants.d414.w,
                               fit: BoxFit.cover,
                             ),
@@ -144,6 +144,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             ),
                                           ),
                                           TextFormField(
+                                            textCapitalization: TextCapitalization.sentences,
+
                                             controller:
                                                 provider.studentNameController,
                                             decoration: ViewDecoration

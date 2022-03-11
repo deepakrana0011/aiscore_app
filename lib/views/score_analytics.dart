@@ -3,6 +3,7 @@ import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/constants/image_constants.dart';
 import 'package:ai_score/enum/viewstate.dart';
 import 'package:ai_score/extensions/allextensions.dart';
+import 'package:ai_score/helper/dialog_helper.dart';
 import 'package:ai_score/helper/keyboard_helper.dart';
 import 'package:ai_score/provider/score_analytics_provider.dart';
 import 'package:ai_score/views/base_view.dart';
@@ -32,7 +33,7 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
       return Scaffold(
         backgroundColor: ColorConstants.backgroundColor,
         appBar: KeyboardHelper.appBarWithBack(context),
-        body: Container(
+        body: SizedBox(
           height: DimensionConstants.d896.h,
           width: DimensionConstants.d414.w,
           child: Column(
@@ -52,7 +53,7 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                     ),
                   ),
                   SizedBox(
-                    width: DimensionConstants.d73.w,
+                    width: DimensionConstants.d110.w,
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: DimensionConstants.d45.h),
@@ -247,14 +248,17 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                             return Container(
                                 height: DimensionConstants.d55.h,
                                 width: MediaQuery.of(context).size.width,
+
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                                   children: <Widget>[
                                     Text("${index + 1}").boldText(
                                         ColorConstants.blackColor,
                                         DimensionConstants.d14.sp,
                                         TextAlign.center),
                                     SizedBox(
-                                      width: DimensionConstants.d30.w,
+                                      width: DimensionConstants.d28.w,
                                     ),
                                     Text("$seconds").boldText(
                                         ColorConstants.blackColor,
@@ -271,11 +275,17 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                                     SizedBox(
                                       width: DimensionConstants.d80.w,
                                     ),
-                                    ImageView(
-                                      path: ImagesConstants.listImage,
-                                      height: DimensionConstants.d49.h,
-                                      width: DimensionConstants.d49.w,
-                                      fit: BoxFit.cover,
+                                    GestureDetector(
+                                      onTap: (){
+                                        DialogHelper.showDialogWithSingleImage(context,ImagesConstants.appIcon);
+
+                                      },
+                                      child: ImageView(
+                                        path: ImagesConstants.listImage,
+                                        height: DimensionConstants.d49.h,
+                                        width: DimensionConstants.d49.w,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     SizedBox(
                                       width: DimensionConstants.d40.w,

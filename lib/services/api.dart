@@ -14,7 +14,7 @@ import '../model/addscore_response.dart';
 import '../model/getlastscoer_response.dart';
 import '../model/getscore_response.dart';
 import '../model/login_response.dart';
-import '../provider/save_token.dart';
+import '../helper/save_token.dart';
 import 'FetchDataExpection.dart';
 
 class Api {
@@ -30,7 +30,7 @@ class Api {
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["error"];
+        var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
         throw SocketException(" ");
@@ -53,7 +53,7 @@ class Api {
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
-        var errorMeaasge = errorData["error"];
+        var errorMeaasge = errorData["message"];
         throw FetchDataException(errorMeaasge);
       } else {
         throw const SocketException("");
@@ -80,7 +80,7 @@ class Api {
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["error"];
+        var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
         throw SocketException("");
@@ -102,7 +102,7 @@ class Api {
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = json.decode(e.response.toString());
-        var errorMessage = errorData["error"];
+        var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
         throw SocketException("");
@@ -123,7 +123,7 @@ class Api {
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = json.decode(e.response.toString());
-        var errorMessage = errorData["error"];
+        var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
         throw SocketException("");

@@ -7,7 +7,6 @@ import 'package:ai_score/provider/smile_screen_provider.dart';
 import 'package:ai_score/views/base_view.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
@@ -17,7 +16,10 @@ import '../helper/keyboard_helper.dart';
 import '../main.dart';
 
 class SmileScreen extends StatefulWidget {
-  const SmileScreen({Key? key}) : super(key: key);
+  String? category;
+  String? pageName;
+
+  SmileScreen({Key? key, this.category, this.pageName}) : super(key: key);
 
   @override
   _SmileScreenState createState() => _SmileScreenState();
@@ -26,12 +28,12 @@ class SmileScreen extends StatefulWidget {
 class _SmileScreenState extends State<SmileScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   SmileScreenProvider? provider;
-
-
-
+  int selectedState=0;
 
   @override
   Widget build(BuildContext context) {
+    widget.category;
+    widget.pageName;
     return BaseView<SmileScreenProvider>(
       onModelReady: (provider) {
         this.provider = provider;
@@ -43,11 +45,12 @@ class _SmileScreenState extends State<SmileScreen>
           provider.updateData(true);
         });
 
-        provider.getScoreData(context, '1.1');
+        provider.getScoreData(context, widget.category.toString());
       },
       builder: (context, provider, _) {
         return Scaffold(
-          appBar: KeyboardHelper.appBarWithBackTitle(context, "Smile"),
+          appBar: KeyboardHelper.appBarWithBackTitle(
+              context, widget.pageName.toString()),
           body: Center(
             child: Column(
               children: <Widget>[
@@ -65,7 +68,7 @@ class _SmileScreenState extends State<SmileScreen>
                         ],
                       ),
                       child: Container(
-                        height: DimensionConstants.d30.h,
+                        height: DimensionConstants.d37.h,
                         color: ColorConstants.primaryColor,
                       ),
                     ),
@@ -140,41 +143,45 @@ class _SmileScreenState extends State<SmileScreen>
                                 activeFgColor: Colors.white,
                                 inactiveBgColor: ColorConstants.inActiveColor,
                                 inactiveFgColor: Colors.red,
-                                initialLabelIndex: 1,
+                                initialLabelIndex: provider.selectedToggle,
                                 totalSwitches: 2,
                                 labels: const ["Start", "Stop"],
                                 radiusStyle: true,
                                 onToggle: (index) {
+                                  provider.updateSelectedState(index!);
                                   if (index == 0) {
-                                    controller != null && controller!.value.isInitialized && !controller!.value.isRecordingVideo
+                                    controller != null &&
+                                            controller!.value.isInitialized &&
+                                            !controller!.value.isRecordingVideo
                                         ? startVideoRecording().then((_) {
-                                      if (mounted) {
-                                        twoMinTimer();
-                                        provider.updateData(true);
-                                      }
-                                    })
-
+                                            if (mounted) {
+                                              twoMinTimer();
+                                              provider.updateData(true);
+                                            }
+                                          })
                                         : null;
-                                  } else {
-
+                                  }
+                                  else {
                                     provider.addscore(
                                       context,
-                                      "1.1",
+                                      widget.category.toString(),
                                       provider.minuteCount +
                                           provider.secondsCount,
                                     );
-                                    controller != null && controller!.value.isInitialized && controller!.value.isRecordingVideo
-                                        ? stopVideoRecording().then((XFile? file) async {
-                                      if (mounted) {
-                                       // provider.updateData(true);
-                                      }
-                                      if (file != null) {
-                                        provider.secondsCount = 0;
-                                        provider.minuteCount = 0;
-                                        provider.timer?.cancel();
-
-                                      }
-                                    })
+                                    controller != null &&
+                                            controller!.value.isInitialized &&
+                                            controller!.value.isRecordingVideo
+                                        ? stopVideoRecording()
+                                            .then((XFile? file) async {
+                                            if (mounted) {
+                                              provider.updateData(true);
+                                            }
+                                            if (file != null) {
+                                              provider.secondsCount = 0;
+                                              provider.minuteCount = 0;
+                                              provider.timer?.cancel();
+                                            }
+                                          })
                                         : null;
                                   }
                                 },
@@ -188,7 +195,7 @@ class _SmileScreenState extends State<SmileScreen>
                   height: DimensionConstants.d20.h,
                 ),
                 Padding(
-                    padding: EdgeInsets.only(),
+                    padding: const EdgeInsets.only(),
                     child: provider.state == ViewState.Busy
                         ? const CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
@@ -238,8 +245,10 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScoreGet[0]
-                                            .toString())
+                                    child: Text(provider.totalScores.isNotEmpty
+                                            ? provider.totalScores[0].totalScore
+                                                .toString()
+                                            : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -249,8 +258,10 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScoreGet[1]
-                                            .toString())
+                                    child: Text(provider.totalScores.length > 1
+                                            ? provider.totalScores[1].totalScore
+                                                .toString()
+                                            : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -260,8 +271,10 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScoreGet[2]
-                                            .toString())
+                                    child: Text(provider.totalScores.length > 2
+                                            ? provider.totalScores[2].totalScore
+                                                .toString()
+                                            : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -301,9 +314,7 @@ class _SmileScreenState extends State<SmileScreen>
                 context, "Sorry, Video record cannot be more than 2 minutes.");
             stopVideoRecording().then((XFile? file) async {
               if (mounted) {
-
                 provider?.updateData(true);
-
               }
               if (file != null) {
                 provider?.secondsCount = 0;
@@ -322,24 +333,13 @@ class _SmileScreenState extends State<SmileScreen>
     );
   }
 
-// this code is for web camera
   CameraController? controller;
   XFile? imageFile;
   XFile? videoFile;
-  //VideoPlayerController? videoController;
   VoidCallback? videoPlayerListener;
   bool enableAudio = true;
-  double _minAvailableExposureOffset = 0.0;
-  double _maxAvailableExposureOffset = 0.0;
-  double _currentExposureOffset = 0.0;
-  late AnimationController _flashModeControlRowAnimationController;
-  late Animation<double> _flashModeControlRowAnimation;
-  late AnimationController _exposureModeControlRowAnimationController;
-  late Animation<double> _exposureModeControlRowAnimation;
-  late AnimationController _focusModeControlRowAnimationController;
-  late Animation<double> _focusModeControlRowAnimation;
-  double _minAvailableZoom = 1.0;
-  double _maxAvailableZoom = 1.0;
+  final double _minAvailableZoom = 1.0;
+  final double _maxAvailableZoom = 1.0;
   double _currentScale = 1.0;
   double _baseScale = 1.0;
 
@@ -399,57 +399,6 @@ class _SmileScreenState extends State<SmileScreen>
   }
 
   /// Display the control bar with buttons to take pictures and record videos.
-  Widget _captureControlRowWidget() {
-    final CameraController? cameraController = controller;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          color: Colors.blue,
-          onPressed: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  !cameraController.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: cameraController != null &&
-                  cameraController.value.isRecordingPaused
-              ? const Icon(Icons.play_arrow)
-              : const Icon(Icons.pause),
-          color: Colors.blue,
-          onPressed: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  cameraController.value.isRecordingVideo
-              ? (cameraController.value.isRecordingPaused)
-                  ? onResumeButtonPressed
-                  : onPauseButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.stop),
-          color: Colors.red,
-          onPressed: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  cameraController.value.isRecordingVideo
-              ? onStopButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.pause_presentation),
-          color:
-              cameraController != null && cameraController.value.isPreviewPaused
-                  ? Colors.red
-                  : Colors.blue,
-          onPressed:
-              cameraController == null ? null : onPausePreviewButtonPressed,
-        ),
-      ],
-    );
-  }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -474,125 +423,16 @@ class _SmileScreenState extends State<SmileScreen>
     cameraController.setFocusPoint(offset);
   }
 
-  Future<void> onNewCameraSelected(CameraDescription cameraDescription) async {
-    if (controller != null) {
-      await controller!.dispose();
-    }
-
-    final CameraController cameraController = CameraController(
-      cameraDescription,
-      kIsWeb ? ResolutionPreset.max : ResolutionPreset.medium,
-      enableAudio: enableAudio,
-      imageFormatGroup: ImageFormatGroup.jpeg,
-    );
-
-    controller = cameraController;
-
-    // If the controller is updated then update the UI.
-    cameraController.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-      if (cameraController.value.hasError) {
-        showInSnackBar(
-            'Camera error ${cameraController.value.errorDescription}');
-      }
-    });
-
-    try {
-      await cameraController.initialize();
-      await Future.wait(<Future<Object?>>[
-        // The exposure mode is currently not supported on the web.
-        ...!kIsWeb
-            ? <Future<Object?>>[
-                cameraController.getMinExposureOffset().then(
-                    (double value) => _minAvailableExposureOffset = value),
-                cameraController
-                    .getMaxExposureOffset()
-                    .then((double value) => _maxAvailableExposureOffset = value)
-              ]
-            : <Future<Object?>>[],
-        cameraController
-            .getMaxZoomLevel()
-            .then((double value) => _maxAvailableZoom = value),
-        cameraController
-            .getMinZoomLevel()
-            .then((double value) => _minAvailableZoom = value),
-      ]);
-    } on CameraException catch (e) {
-      _showCameraException(e);
-    }
-
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void onFlashModeButtonPressed() {
-    if (_flashModeControlRowAnimationController.value == 1) {
-      _flashModeControlRowAnimationController.reverse();
-    } else {
-      _flashModeControlRowAnimationController.forward();
-      _exposureModeControlRowAnimationController.reverse();
-      _focusModeControlRowAnimationController.reverse();
-    }
-  }
-
-  void onExposureModeButtonPressed() {
-    if (_exposureModeControlRowAnimationController.value == 1) {
-      _exposureModeControlRowAnimationController.reverse();
-    } else {
-      _exposureModeControlRowAnimationController.forward();
-      _flashModeControlRowAnimationController.reverse();
-      _focusModeControlRowAnimationController.reverse();
-    }
-  }
-
-  void onFocusModeButtonPressed() {
-    if (_focusModeControlRowAnimationController.value == 1) {
-      _focusModeControlRowAnimationController.reverse();
-    } else {
-      _focusModeControlRowAnimationController.forward();
-      _flashModeControlRowAnimationController.reverse();
-      _exposureModeControlRowAnimationController.reverse();
-    }
-  }
-
-  void onAudioModeButtonPressed() {
-    enableAudio = !enableAudio;
-    if (controller != null) {
-      onNewCameraSelected(controller!.description);
-    }
-  }
-
-  Future<void> onCaptureOrientationLockButtonPressed() async {
-    try {
-      if (controller != null) {
-        final CameraController cameraController = controller!;
-        if (cameraController.value.isCaptureOrientationLocked) {
-          await cameraController.unlockCaptureOrientation();
-          showInSnackBar('Capture orientation unlocked');
-        } else {
-          await cameraController.lockCaptureOrientation();
-          showInSnackBar(
-              'Capture orientation locked to ${cameraController.value.lockedCaptureOrientation.toString().split('.').last}');
-        }
-      }
-    } on CameraException catch (e) {
-      _showCameraException(e);
-    }
-  }
-
-  void onVideoRecordButtonPressed() {
+  /*void onVideoRecordButtonPressed() {
     startVideoRecording().then((_) {
       if (mounted) {
         twoMinTimer();
         provider?.updateData(true);
       }
     });
-  }
+  }*/
 
-  void onStopButtonPressed() {
+  /*void onStopButtonPressed() {
     stopVideoRecording().then((XFile? file) async {
       if (mounted) {
         provider?.updateData(true);
@@ -604,44 +444,7 @@ class _SmileScreenState extends State<SmileScreen>
       }
     });
   }
-
-  Future<void> onPausePreviewButtonPressed() async {
-    final CameraController? cameraController = controller;
-
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
-      return;
-    }
-
-    if (cameraController.value.isPreviewPaused) {
-      await cameraController.resumePreview();
-    } else {
-      await cameraController.pausePreview();
-    }
-
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void onPauseButtonPressed() {
-    pauseVideoRecording().then((_) {
-      if (mounted) {
-        setState(() {});
-      }
-      showInSnackBar('Video recording paused');
-    });
-  }
-
-  void onResumeButtonPressed() {
-    resumeVideoRecording().then((_) {
-      if (mounted) {
-        setState(() {});
-      }
-      showInSnackBar('Video recording resumed');
-    });
-  }
-
+*/
   Future<void> startVideoRecording() async {
     final CameraController? cameraController = controller;
 
@@ -672,112 +475,6 @@ class _SmileScreenState extends State<SmileScreen>
 
     try {
       return cameraController.stopVideoRecording();
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      return null;
-    }
-  }
-
-  Future<void> pauseVideoRecording() async {
-    final CameraController? cameraController = controller;
-
-    if (cameraController == null || !cameraController.value.isRecordingVideo) {
-      return;
-    }
-
-    try {
-      await cameraController.pauseVideoRecording();
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<void> resumeVideoRecording() async {
-    final CameraController? cameraController = controller;
-
-    if (cameraController == null || !cameraController.value.isRecordingVideo) {
-      return;
-    }
-
-    try {
-      await cameraController.resumeVideoRecording();
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<void> setFlashMode(FlashMode mode) async {
-    if (controller == null) {
-      return;
-    }
-
-    try {
-      await controller!.setFlashMode(mode);
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<void> setExposureMode(ExposureMode mode) async {
-    if (controller == null) {
-      return;
-    }
-
-    try {
-      await controller!.setExposureMode(mode);
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<void> setExposureOffset(double offset) async {
-    if (controller == null) {
-      return;
-    }
-
-    setState(() {
-      _currentExposureOffset = offset;
-    });
-    try {
-      offset = await controller!.setExposureOffset(offset);
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<void> setFocusMode(FocusMode mode) async {
-    if (controller == null) {
-      return;
-    }
-
-    try {
-      await controller!.setFocusMode(mode);
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      rethrow;
-    }
-  }
-
-  Future<XFile?> takePicture() async {
-    final CameraController? cameraController = controller;
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
-      return null;
-    }
-
-    if (cameraController.value.isTakingPicture) {
-      // A capture is already pending, do nothing.
-      return null;
-    }
-
-    try {
-      final XFile file = await cameraController.takePicture();
-      return file;
     } on CameraException catch (e) {
       _showCameraException(e);
       return null;

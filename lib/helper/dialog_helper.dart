@@ -6,6 +6,7 @@ import 'package:ai_score/model/list_model.dart';
 import 'package:ai_score/widgets/custom_shape.dart';
 import 'package:ai_score/widgets/image_view.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,7 +19,8 @@ class DialogHelper {
 
   static Future showDialogWithGridView(
     BuildContext context,
-    String title,
+      String? imagePath,
+
   ) {
     return showDialog(
       context: context,
@@ -32,7 +34,7 @@ class DialogHelper {
           shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.all(Radius.circular(DimensionConstants.d20.r))),
-          title: Text(title).boldText(ColorConstants.blackColor,
+          title:  Text("wrongActionPicture".tr()).boldText(ColorConstants.blackColor,
               DimensionConstants.d22.sp, TextAlign.left),
           content: Container(
             width: DimensionConstants.d375.w,
@@ -47,18 +49,7 @@ class DialogHelper {
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 9,
                 children: <String>[
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
-                  ImagesConstants.listImage,
+                 imagePath.toString()
                 ].map((String url) {
                   return Material(
                     elevation: 3,
@@ -139,6 +130,51 @@ class DialogHelper {
       },
     );
   }
+
+
+  static Future showDialogWithSingleImage(
+      BuildContext context,
+      String? imagePath,
+
+      ) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext buildContext) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 100.0,
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.all(Radius.circular(DimensionConstants.d20.r))),
+          title:  Text("wrongActionPicture".tr()).boldText(ColorConstants.blackColor,
+              DimensionConstants.d22.sp, TextAlign.left),
+          content: Container(
+            width: DimensionConstants.d375.w,
+            height: DimensionConstants.d293.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Container(
+              width: DimensionConstants.d370.w,
+              height: DimensionConstants.d285.h,
+              child: ImageView(
+                path: imagePath,
+
+
+              ),
+            )
+
+          ),
+        );
+      },
+    );
+  }
+
+
+
 
 /*  static Future showDialogWithTwoButtonswithImage(
     BuildContext context,
@@ -281,8 +317,8 @@ class DialogHelper {
   static showMessage(BuildContext context, String message) {
     Flushbar(
       message: message,
-      backgroundColor: ColorConstants.textGrayColor,
-      duration: Duration(seconds: 3),
-    )..show(context);
+      backgroundColor: ColorConstants.primaryColor,
+      duration: const Duration(seconds: 3),
+    ).show(context);
   }
 }

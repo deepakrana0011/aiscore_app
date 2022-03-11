@@ -1,5 +1,7 @@
+
+import 'package:ai_score/provider/category_screen_provider.dart';
 import 'package:ai_score/provider/login_provider.dart';
-import 'package:ai_score/provider/save_token.dart';
+import 'package:ai_score/helper/save_token.dart';
 import 'package:ai_score/provider/score_analytics_provider.dart';
 import 'package:ai_score/provider/signup_provider.dart';
 import 'package:ai_score/provider/smile_screen_provider.dart';
@@ -15,6 +17,8 @@ void setUpLocator() {
   locator.registerFactory(() => SignUpProvider());
   locator.registerFactory(() => ScoreAnalyticsProvider());
   locator.registerFactory(() => SmileScreenProvider());
+  locator.registerFactory(() => CategoryScreenProvider());
+
 
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();

@@ -192,6 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: EdgeInsets.only(
                                 left: DimensionConstants.d230.w,
                                 right: DimensionConstants.d10.w,
+                                bottom: DimensionConstants.d5.h
                               ),
                               child: IconButton(
                                   onPressed: () {
@@ -239,10 +240,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .login(
                                             context,
                                             provider.userNameController.text,
-                                            provider.passwordController.text)
-                                        .then((value) {
-                                      if (value) {}
-                                    });
+                                            provider.passwordController.text);
+
                                   }
 
                                   /* if (provider.formKey.currentState!.validate()) {

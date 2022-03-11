@@ -1,3 +1,4 @@
+
 import 'package:ai_score/views/category_screen.dart';
 import 'package:ai_score/views/login_screen.dart';
 import 'package:ai_score/views/score_analytics.dart';
@@ -25,9 +26,10 @@ class Router {
       case RoutesConstants.scoreAnalytics:
         return MaterialPageRoute(
             builder: (_) => ScoreAnalytics(), settings: settings);
-      case RoutesConstants.smileScreen:
+     /* case RoutesConstants.smileScreen:
         return MaterialPageRoute(
-            builder: (_) => SmileScreen(), settings: settings);
+            builder: (_) => SmileScreen(), settings: settings);*/
+
 
       default:
         //return MaterialPageRoute(builder: (_) =>  Testing());

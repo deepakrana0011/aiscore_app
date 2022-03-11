@@ -18,15 +18,12 @@ import '../model/category_list_model.dart';
 import '../model/getlastscoer_response.dart';
 
 class SmileScreenProvider extends BaseProvider {
-
   List<ScoresList> totalScores = [];
   List totalScoreGet = [];
   int? round;
+  int selectedToggle = 0;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-
-
 
   /// declare a cound variable with initial value
   int secondsCount = 0;
@@ -58,17 +55,13 @@ class SmileScreenProvider extends BaseProvider {
       if (model.success) {
         DialogHelper.showMessage(context, model.message);
         setState(ViewState.Idle);
-
       }
-
     } on FetchDataException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-
     } on SocketException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-
     }
   }
 
@@ -100,5 +93,10 @@ class SmileScreenProvider extends BaseProvider {
 
       return false;
     }
+  }
+
+  void updateSelectedState(int state) {
+    selectedToggle = state;
+    notifyListeners();
   }
 }
