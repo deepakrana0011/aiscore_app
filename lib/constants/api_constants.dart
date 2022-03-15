@@ -4,7 +4,7 @@ class ApiConstants {
   static const REGISTER = 'register';
   static const ADDSCORE = 'addscore';
   static const GETSTUDENTID ="getscores/";
-  static const GETSCORE = '?category=&sore= ';
   static const LASTSCORE ='lastscores/';
   static const LASTSCOREGET ='?category=';
+  static const UPLOADVIDEO = "uploadvideo";
 }

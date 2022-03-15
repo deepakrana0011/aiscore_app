@@ -28,7 +28,7 @@ class Data {
   String studentNo;
   int status;
   int v;
-
+  String token;
   String ID;
 
   Data(
@@ -37,6 +37,7 @@ class Data {
       required this.studentNo,
       required this.status,
       required this.v,
+      required this.token,
       required this.ID});
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -44,6 +45,7 @@ class Data {
       studentName: json["studentName"],
       studentNo: json["studentNo"],
       status: json["status"],
+      token: json["token"],
       v: json["__v"],
       ID: json['id']);
 

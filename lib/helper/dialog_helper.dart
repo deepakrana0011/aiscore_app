@@ -24,7 +24,7 @@ class DialogHelper {
   ) {
     return showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return AlertDialog(
           insetPadding: const EdgeInsets.symmetric(
@@ -139,7 +139,7 @@ class DialogHelper {
       ) {
     return showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return AlertDialog(
           insetPadding: const EdgeInsets.symmetric(

@@ -15,16 +15,31 @@ import '../json/category_list.dart';
 import '../model/category_list_model.dart';
 
 class ScoreAnalyticsProvider extends BaseProvider {
+
   List<CategoryList> categoryList = [];
-  List<String> score = ['10', '20', '30', '40', '50', '60'];
+  List<String> score = ['Ascen','Descen'];
   List<GetScoreData> itemsOfList = [];
   String categoryDropDownValue = "";
   String? categoryDropDownValueId;
+  List<int> values=[];
+
+
   List id = [];
-  List studentId = [];
-  List time = [];
-  List totalScore = [];
-  List Category = [];
+
+ bool tap = false;
+changeTap(){
+
+  tap = !tap;
+  notifyListeners();
+
+}
+
+  String? listName;
+
+  getCategoryName(String name){
+    listName = name;
+    notifyListeners();
+  }
 
   getCategoryData() {
     var response = CategoryListModel.fromJson(categoryData);
@@ -45,7 +60,7 @@ class ScoreAnalyticsProvider extends BaseProvider {
   }
 
   Future<bool> getScoreData(
-      BuildContext context, String category, int score) async {
+      BuildContext context, String category, String score) async {
     setState(ViewState.Busy);
     try {
       var model = await api.getScore(context, category, score);
@@ -53,11 +68,13 @@ class ScoreAnalyticsProvider extends BaseProvider {
       if (model.success) {
         itemsOfList = model.data;
         for (var element in itemsOfList) {
-          id.add(element.id);
+          values.add(element.totalScore);
+
+          /*id.add(element.id);
           studentId.add(element.studentId);
           time.add(element.time);
           totalScore.add(element.totalScore);
-          Category.add(element.category);
+          Category.add(element.category);*/
         }
       }
       setState(ViewState.Idle);

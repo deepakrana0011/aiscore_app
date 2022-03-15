@@ -235,7 +235,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 "passWord".tr(),
                                                 ColorConstants.lightGrayColor,
                                               ),
-                                              validator: (value) {
+                                             /* validator: (value) {
                                                 if (value!.trim().isEmpty) {
                                                   return 'Empty password';
                                                 } else if (value.length < 6) {
@@ -243,7 +243,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 } else {
                                                   return null;
                                                 }
-                                              },
+                                              },*/
                                             ),
                                             Padding(
                                               padding: EdgeInsets.only(

@@ -7,6 +7,7 @@ import 'package:ai_score/helper/shared_pref.dart';
 import 'package:ai_score/model/getlastscoer_response.dart';
 import 'package:ai_score/provider/base_provider.dart';
 import 'package:ai_score/services/FetchDataExpection.dart';
+import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class SmileScreenProvider extends BaseProvider {
     }
   }
 
-  Future<bool> getScoreData(BuildContext context, String category) async {
+  Future<void> getLastScoreData(BuildContext context, String category) async {
     setState(ViewState.Busy);
     try {
       var model = await api.getLastScores(
@@ -76,24 +77,58 @@ class SmileScreenProvider extends BaseProvider {
       if (model.success) {
         round = model.data!.round;
 
-        totalScores = model.data!.scores;
+        totalScores =  model.data!.scores;
         for (var element in totalScores) {
           totalScoreGet.add(element.totalScore);
         }
       }
       setState(ViewState.Idle);
-      return false;
+
     } on FetchDataException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-      return false;
+
     } on SocketException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
 
+
+    }
+  }
+
+  bool updateVideo = false;
+
+  updateUploadVideo(bool val){
+    updateVideo = val;
+    notifyListeners();
+  }
+
+
+  Future<bool> uploadVideo(
+      BuildContext context, XFile videoFile) async {
+
+    updateUploadVideo(true);
+    try {
+      var model =  await api.uploadVideo( videoFile);
+      if(model.success == true){
+        DialogHelper.showMessage(context, model.message);
+      } else{
+        DialogHelper.showMessage(context, model.message);
+      }
+      updateUploadVideo(false);
+      return true;
+    } on FetchDataException catch (c) {
+      updateUploadVideo(false);
+      DialogHelper.showMessage(context, c.toString());
+      return false;
+    } on SocketException catch (c) {
+      updateUploadVideo(false);
+      DialogHelper.showMessage(context, 'internet_connection'.tr());
       return false;
     }
   }
+
+
 
   void updateSelectedState(int state) {
     selectedToggle = state;

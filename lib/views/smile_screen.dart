@@ -28,7 +28,7 @@ class SmileScreen extends StatefulWidget {
 class _SmileScreenState extends State<SmileScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   SmileScreenProvider? provider;
-  int selectedState=0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _SmileScreenState extends State<SmileScreen>
           provider.updateData(true);
         });
 
-        provider.getScoreData(context, widget.category.toString());
+        provider.getLastScoreData(context, widget.category.toString());
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -160,26 +160,38 @@ class _SmileScreenState extends State<SmileScreen>
                                             }
                                           })
                                         : null;
-                                  }
-                                  else {
-                                    provider.addscore(
-                                      context,
-                                      widget.category.toString(),
-                                      provider.minuteCount +
-                                          provider.secondsCount,
-                                    );
+                                  } else {
+
+                                    if (provider.secondsCount == 0 &&
+                                        provider.minuteCount == 0) {
+                                    } else {
+
+
+                                      provider.addscore(
+                                        context,
+                                        widget.category.toString(),
+                                        provider.minuteCount +
+                                            provider.secondsCount,
+                                      );
+                                      Timer(const Duration(milliseconds: 400), () {
+                                        provider.getLastScoreData(
+                                            context, widget.category.toString());
+
+                                      });
+
+                                    }
+
                                     controller != null &&
                                             controller!.value.isInitialized &&
                                             controller!.value.isRecordingVideo
                                         ? stopVideoRecording()
                                             .then((XFile? file) async {
-                                            if (mounted) {
-                                              provider.updateData(true);
-                                            }
                                             if (file != null) {
+
                                               provider.secondsCount = 0;
                                               provider.minuteCount = 0;
                                               provider.timer?.cancel();
+                                              provider.uploadVideo(context, file);
                                             }
                                           })
                                         : null;
@@ -245,10 +257,11 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScores.isNotEmpty
-                                            ? provider.totalScores[0].totalScore
-                                                .toString()
-                                            : "")
+                                    child: Text(
+                                            provider.totalScoreGet.isNotEmpty
+                                                ? provider.totalScoreGet[0]
+                                                    .toString()
+                                                : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -258,10 +271,11 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScores.length > 1
-                                            ? provider.totalScores[1].totalScore
-                                                .toString()
-                                            : "")
+                                    child: Text(
+                                            provider.totalScoreGet.length > 1
+                                                ? provider.totalScoreGet[1]
+                                                    .toString()
+                                                : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -271,10 +285,11 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(provider.totalScores.length > 2
-                                            ? provider.totalScores[2].totalScore
-                                                .toString()
-                                            : "")
+                                    child: Text(
+                                            provider.totalScoreGet.length > 2
+                                                ? provider.totalScoreGet[2]
+                                                    .toString()
+                                                : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
@@ -320,6 +335,7 @@ class _SmileScreenState extends State<SmileScreen>
                 provider?.secondsCount = 0;
                 provider?.minuteCount = 0;
                 provider?.timer?.cancel();
+                await provider?.uploadVideo(context, file);
               }
             });
             timer.cancel();

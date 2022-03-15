@@ -41,11 +41,12 @@ class SignUpProvider extends BaseProvider {
         saveToken.id = model.data!.id;
         saveToken.checkLogin = false;
         if (model.data!.status == 1) {
-          SharedPref.prefs!.setString(SharedPref.studentName, model.data!.studentName);
-          SharedPref.prefs!.setString(SharedPref.studentId, model.data!.studentNo);
-
-
-
+          SharedPref.prefs?.setString(SharedPref.TOKEN, model.data!.token);
+          SharedPref.prefs?.setString(SharedPref.ID, model.data!.id);
+          SharedPref.prefs!
+              .setString(SharedPref.studentName, model.data!.studentName);
+          SharedPref.prefs!
+              .setString(SharedPref.studentId, model.data!.studentNo);
           Navigator.pushNamedAndRemoveUntil(context,
               RoutesConstants.categoryScreen, (Route<dynamic> route) => false,
               arguments: true);

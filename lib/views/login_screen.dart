@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 "passWord".tr(),
                                 ColorConstants.lightGrayColor,
                               ),
-                              validator: (value) {
+                              /*validator: (value) {
                                 if (value!.trim().isEmpty) {
                                   return 'Empty password';
                                 } else if (value.length < 6) {
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 } else {
                                   return null;
                                 }
-                              },
+                              }*/
                             ),
                             Padding(
                               padding: EdgeInsets.only(
