@@ -1,10 +1,11 @@
 class ApiConstants {
-  static const BASEURL = 'http://54.167.225.106:8080/users/';
-  static const LOGIN = 'login';
-  static const REGISTER = 'register';
-  static const ADDSCORE = 'addscore';
-  static const GETSTUDENTID ="getscores/";
-  static const LASTSCORE ='lastscores/';
+  static const BASEURL = 'https://www.vanasy.cn:8080/';
+  static const LOGIN = 'users/login';
+  static const REGISTER = 'users/register';
+  static const ADDSCORE = 'users/addscore';
+  static const GETSTUDENTID ="users/getscores/";
+  static const LASTSCORE ='users/lastscores/';
   static const LASTSCOREGET ='?category=';
-  static const UPLOADVIDEO = "uploadvideo";
+  static const UPLOADVIDEO = "admin/uploadvideo";
+  static const aiPoseCompare = "http://120.76.140.117/pose_compare";
 }

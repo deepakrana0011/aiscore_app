@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ai_score/enum/viewstate.dart';
+import 'package:ai_score/model/pose_compare_response.dart';
 import 'package:ai_score/model/signup_response.dart';
 import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
@@ -24,6 +25,7 @@ import 'FetchDataExpection.dart';
 class Api {
   Dio dio = locator<Dio>();
   SaveToken saveToken = locator<SaveToken>();
+
   Future<LoginResponse> login(
       BuildContext context, String username, String password) async {
     try {
@@ -66,16 +68,16 @@ class Api {
   }
 
   Future<AddScoreResponse> addscore(
-      BuildContext context, String category, int time) async {
+      BuildContext context, String category, int time,String pose,String score) async {
     try {
-
-
       dio.options.headers["Authorization"] =
           "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
       var map = {
         "studentId": SharedPref.prefs!.getString(SharedPref.ID),
         "category": category,
-        "time": time
+        "time": time,
+        "image":pose,
+        "score":score
       };
 
       var response = await dio
@@ -95,12 +97,15 @@ class Api {
   Future<GetScore> getScore(
       BuildContext context, String category, String score) async {
     try {
-      dio.options.headers["Authorization"] = "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
+      dio.options.headers["Authorization"] =
+          "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
 
       var map = {"category": category, "score": score};
       var id = SharedPref.prefs?.getString(SharedPref.ID);
 
-      var response = await dio.get(ApiConstants.BASEURL+ ApiConstants.GETSTUDENTID +id!, queryParameters: map,
+      var response = await dio.get(
+        ApiConstants.BASEURL + ApiConstants.GETSTUDENTID + id!,
+        queryParameters: map,
       );
       return GetScore.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -115,15 +120,17 @@ class Api {
   }
 
   Future<GetLastScoreResponse> getLastScores(
-
       BuildContext context, String category) async {
     try {
-      dio.options.headers["Authorization"] = "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
+      dio.options.headers["Authorization"] =
+          "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
 
       var map = {"category": category};
       var id = SharedPref.prefs?.getString(SharedPref.ID);
 
-      var response = await dio.get(ApiConstants.BASEURL+ApiConstants.LASTSCORE+id!, queryParameters: map);
+      var response = await dio.get(
+          ApiConstants.BASEURL + ApiConstants.LASTSCORE + id!,
+          queryParameters: map);
       return GetLastScoreResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -136,14 +143,18 @@ class Api {
     }
   }
 
-
-  Future<UploadVideoResponse> uploadVideo( XFile video) async {
+  Future<UploadVideoResponse> uploadVideo(XFile video) async {
     try {
       Uint8List bytes = await video.readAsBytes();
-      dio.options.headers["Authorization"] = "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
-      var videoDocument = MultipartFile.fromBytes(bytes, filename: "aiVideo.mp4");
-      var videoMap = {"video" : videoDocument};
-      var response = await dio.post(ApiConstants.BASEURL + ApiConstants.UPLOADVIDEO, data: FormData.fromMap(videoMap));
+      dio.options.headers["Authorization"] =
+          "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
+      var videoDocument =
+          MultipartFile.fromBytes(bytes, filename: "aiVideo.mp4");
+      var videoMap = {"video": videoDocument};
+      var response = await dio.post(
+          ApiConstants.BASEURL + ApiConstants.UPLOADVIDEO,
+          data: FormData.fromMap(videoMap));
+      var responseString = response.toString();;
       return UploadVideoResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -156,7 +167,24 @@ class Api {
     }
   }
 
-
-
-
+  Future<PoseCompareResponse> poseCompare(
+      String scoreId, String videoUrl) async {
+    try {
+      var map = <String, dynamic>{
+        "actionId": scoreId,
+        "videoUrl": ApiConstants.BASEURL + videoUrl
+      };
+      var response =
+          await dio.get(ApiConstants.aiPoseCompare, queryParameters: map);
+      return PoseCompareResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /*var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];*/
+        throw FetchDataException("Didn't get the score. Please try again");
+      } else {
+        throw const SocketException("");
+      }
+    }
+  }
 }

@@ -29,13 +29,12 @@ class _SmileScreenState extends State<SmileScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   SmileScreenProvider? provider;
 
-
   @override
   Widget build(BuildContext context) {
-    widget.category;
-    widget.pageName;
+    /*widget.category;
+    widget.pageName;*/
     return BaseView<SmileScreenProvider>(
-      onModelReady: (provider) {
+      onModelReady: (provider) async {
         this.provider = provider;
         controller = CameraController(cameras![0], ResolutionPreset.max);
         controller!.initialize().then((_) {
@@ -45,7 +44,7 @@ class _SmileScreenState extends State<SmileScreen>
           provider.updateData(true);
         });
 
-        provider.getLastScoreData(context, widget.category.toString());
+        await provider.getLastScoreData(context, widget.category.toString(),showLoader: true);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -161,37 +160,37 @@ class _SmileScreenState extends State<SmileScreen>
                                           })
                                         : null;
                                   } else {
-
                                     if (provider.secondsCount == 0 &&
                                         provider.minuteCount == 0) {
                                     } else {
-
-
-                                      provider.addscore(
+                                     /* provider.addscore(
                                         context,
                                         widget.category.toString(),
                                         provider.minuteCount +
                                             provider.secondsCount,
-                                      );
-                                      Timer(const Duration(milliseconds: 400), () {
+                                      );*/
+                                      /*Timer(const Duration(milliseconds: 400), () {
                                         provider.getLastScoreData(
                                             context, widget.category.toString());
 
-                                      });
+                                      });*/
 
                                     }
-
                                     controller != null &&
                                             controller!.value.isInitialized &&
                                             controller!.value.isRecordingVideo
                                         ? stopVideoRecording()
                                             .then((XFile? file) async {
                                             if (file != null) {
-
                                               provider.secondsCount = 0;
                                               provider.minuteCount = 0;
                                               provider.timer?.cancel();
-                                              provider.uploadVideo(context, file);
+                                              provider.uploadVideo(
+                                                  context,
+                                                  file,
+                                                  widget.category.toString(),
+                                                  provider.minuteCount +
+                                                      provider.secondsCount);
                                             }
                                           })
                                         : null;
@@ -335,7 +334,9 @@ class _SmileScreenState extends State<SmileScreen>
                 provider?.secondsCount = 0;
                 provider?.minuteCount = 0;
                 provider?.timer?.cancel();
-                await provider?.uploadVideo(context, file);
+                await provider?.uploadVideo(context, file,widget.category.toString(),
+                    provider!.minuteCount +
+                        provider!.secondsCount);
               }
             });
             timer.cancel();

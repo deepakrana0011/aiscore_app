@@ -47,15 +47,15 @@ class SmileScreenProvider extends BaseProvider {
     super.dispose();
   }
 
-  Future<void> addscore(BuildContext context, String category, int time) async {
-    setState(ViewState.Busy);
-
+  Future<void> addscore(BuildContext context, String category, int time,
+      String pose, int score) async {
     try {
-      var model = await api.addscore(context, category, time);
-
+      var model =
+          await api.addscore(context, category, time, pose, score.toString());
       if (model.success) {
+        await getLastScoreData(context, category);
+      } else {
         DialogHelper.showMessage(context, model.message);
-        setState(ViewState.Idle);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.Idle);
@@ -66,69 +66,77 @@ class SmileScreenProvider extends BaseProvider {
     }
   }
 
-  Future<void> getLastScoreData(BuildContext context, String category) async {
-    setState(ViewState.Busy);
+  Future<void> getLastScoreData(BuildContext context, String category,
+      {bool showLoader = false}) async {
+    if (showLoader) {
+      setState(ViewState.Busy);
+    }
     try {
       var model = await api.getLastScores(
         context,
         category,
       );
-
       if (model.success) {
         round = model.data!.round;
-
-        totalScores =  model.data!.scores;
+        totalScores = model.data!.scores;
         for (var element in totalScores) {
           totalScoreGet.add(element.totalScore);
         }
       }
       setState(ViewState.Idle);
-
     } on FetchDataException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-
     } on SocketException catch (e) {
       setState(ViewState.Idle);
       DialogHelper.showMessage(context, e.toString());
-
-
     }
   }
 
   bool updateVideo = false;
 
-  updateUploadVideo(bool val){
+  updateUploadVideo(bool val) {
     updateVideo = val;
     notifyListeners();
   }
 
-
-  Future<bool> uploadVideo(
-      BuildContext context, XFile videoFile) async {
-
-    updateUploadVideo(true);
+  Future<void> uploadVideo(BuildContext context, XFile videoFile,
+      String categoryId, int time) async {
+    setState(ViewState.Busy);
     try {
-      var model =  await api.uploadVideo( videoFile);
-      if(model.success == true){
-        DialogHelper.showMessage(context, model.message);
-      } else{
+      var model = await api.uploadVideo(videoFile);
+      if (model.success == true) {
+        poseCompare(context, model.data!, categoryId, time);
+      } else {
         DialogHelper.showMessage(context, model.message);
       }
-      updateUploadVideo(false);
-      return true;
     } on FetchDataException catch (c) {
-      updateUploadVideo(false);
+      setState(ViewState.Idle);
       DialogHelper.showMessage(context, c.toString());
-      return false;
     } on SocketException catch (c) {
-      updateUploadVideo(false);
+      setState(ViewState.Idle);
       DialogHelper.showMessage(context, 'internet_connection'.tr());
-      return false;
     }
   }
 
-
+  Future<void> poseCompare(
+      BuildContext context, String videoUrl, String scoreId, int time) async {
+    try {
+      var model = await api.poseCompare(scoreId, videoUrl);
+      if (model.status == true) {
+        await addscore(context, scoreId, time, model.data!.badPoses!,
+            model.data!.scores![0]);
+      } else {
+        DialogHelper.showMessage(context, "oops something went wrong");
+      }
+    } on FetchDataException catch (c) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, c.toString());
+    } on SocketException catch (c) {
+      setState(ViewState.Idle);
+      DialogHelper.showMessage(context, 'internet_connection'.tr());
+    }
+  }
 
   void updateSelectedState(int state) {
     selectedToggle = state;
