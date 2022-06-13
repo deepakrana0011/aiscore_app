@@ -25,6 +25,10 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
+
+  String? imageAddress ;
+
+
   @override
   Widget build(BuildContext context) {
     return BaseView<CategoryScreenProvider>(
@@ -43,35 +47,30 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
             Positioned(
               top: DimensionConstants.d68.h,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: DimensionConstants.d305.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        _signOut();
-                      },
-                      child: const ImageView(
-                        path: ImagesConstants.signOut,
-                        fit: BoxFit.fill,
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d20.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: DimensionConstants.d348.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          _signOut();
+                        },
+                        child: const ImageView(
+                          path: ImagesConstants.signOut,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: DimensionConstants.d19.w,
-                        right: DimensionConstants.d348.w),
-                    child: ImageView(
+                    ImageView(
                       path: ImagesConstants.appIcon,
                       height: DimensionConstants.d80.h,
                       width: DimensionConstants.d72.w,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: DimensionConstants.d19.w,
-                        right: DimensionConstants.d290.w),
-                    child: Row(
+                    Row(
                       children: <Widget>[
                         Text("name".tr()).boldText(ColorConstants.primaryColor,
                             DimensionConstants.d25.sp, TextAlign.left),
@@ -82,12 +81,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 DimensionConstants.d25.sp, TextAlign.left),
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: DimensionConstants.d19.w,
-                        right: DimensionConstants.d225.w),
-                    child: Row(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text("accountId".tr()).boldText(
@@ -101,115 +95,127 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 DimensionConstants.d25.sp, TextAlign.left),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d20.h,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: DimensionConstants.d20.w,
-                        right: DimensionConstants.d170.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RoutesConstants.scoreAnalytics);
-                          },
-                          child: Material(
-                            elevation: 4.0,
-                            shadowColor: Colors.black,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(DimensionConstants.d40.r),
+                    SizedBox(
+                      height: DimensionConstants.d20.h,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: DimensionConstants.d2.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, RoutesConstants.scoreAnalytics);
+                            },
+                            child: Material(
+                              elevation: 4.0,
+                              shadowColor: Colors.black,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(DimensionConstants.d40.r),
+                              ),
+                              child: Container(
+                                  height: DimensionConstants.d51.h,
+                                  width: DimensionConstants.d263.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          DimensionConstants.d40.r)),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d20.w,
+                                        top: DimensionConstants.d12.h),
+                                    child: Text("scoreAnalytics".tr()).boldText(
+                                        ColorConstants.primaryColor,
+                                        DimensionConstants.d20.sp,
+                                        TextAlign.left),
+                                  )),
                             ),
-                            child: Container(
+                          ),
+                          SizedBox(
+                            height: DimensionConstants.d20.h,
+                          ),
+                          Material(
+                              elevation: 4.0,
+                              shadowColor: Colors.black,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(DimensionConstants.d40.r),
+                              ),
+                              child: Container(
                                 height: DimensionConstants.d51.h,
                                 width: DimensionConstants.d263.w,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
                                         DimensionConstants.d40.r)),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d20.w,
-                                      top: DimensionConstants.d12.h),
-                                  child: Text("scoreAnalytics".tr()).boldText(
-                                      ColorConstants.primaryColor,
-                                      DimensionConstants.d20.sp,
-                                      TextAlign.left),
-                                )),
-                          ),
-                        ),
-                        SizedBox(
-                          height: DimensionConstants.d20.h,
-                        ),
-                        Material(
-                            elevation: 4.0,
-                            shadowColor: Colors.black,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(DimensionConstants.d40.r),
-                            ),
-                            child: Container(
-                              height: DimensionConstants.d51.h,
-                              width: DimensionConstants.d263.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      DimensionConstants.d40.r)),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  icon: Padding(
-                                    padding: EdgeInsets.only(right: DimensionConstants.d20.w,top: DimensionConstants.d5.h),
-                                    child: const ImageView(
-                                      path: ImagesConstants.dropDown,
-                                      color: ColorConstants.primaryColor,
-                                    ),
-                                  ),
-                                  menuMaxHeight: DimensionConstants.d414.h,
-                                  hint: const Text("Category").boldText(
-                                      ColorConstants.primaryColor,
-                                      DimensionConstants.d20.sp,
-                                      TextAlign.left),
-                                  value: provider.categoryDropDownValue,
+                                child: DropdownButtonHideUnderline(
+                                  child: ButtonTheme(
+                                    alignedDropdown: true,
+                                    child: DropdownButton(
+                                      icon: Padding(
+                                        padding: EdgeInsets.only(
+                                            right: DimensionConstants.d20.w,
+                                            top: DimensionConstants.d5.h),
+                                        child: const ImageView(
+                                          path: ImagesConstants.dropDown,
+                                          color: ColorConstants.primaryColor,
+                                        ),
+                                      ),
+                                      menuMaxHeight: DimensionConstants.d414.h,
+                                      hint: const Text("Category").boldText(
+                                          ColorConstants.primaryColor,
+                                          DimensionConstants.d20.sp,
+                                          TextAlign.left),
+                                      value: provider.categoryDropDownValue,
+                                      items: provider.categoryList
+                                          .toSet()
+                                          .map((CategoryList item) {
+                                        return DropdownMenuItem(
+                                            onTap: () {
+                                              provider.categoryDropDownValueId = item.categoryNumber.toString();
+                                              provider.nameOfCategory = item.categoryName.toString();
+                                              provider.imageAddress = item.image.toString();
 
-                                  items: provider.categoryList
-                                      .toSet()
-                                      .map((CategoryList item) {
-                                    return DropdownMenuItem(
-                                        onTap: () {
-                                          provider.categoryDropDownValueId =
-                                              item.categoryNumber.toString();
-                                          provider.nameOfCategory = item.categoryName.toString();
-
-                                        },
-                                        value: item.categoryNumber,
-
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: DimensionConstants.d20.w),
-                                          child:
-                                              Text(item.categoryName.toString())
+                                            },
+                                            value: item.categoryNumber,
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  left:
+                                                      DimensionConstants.d20.w),
+                                              child: Text(item.categoryName
+                                                      .toString())
                                                   .boldText(
                                                       ColorConstants
                                                           .primaryColor,
                                                       DimensionConstants.d20.sp,
                                                       TextAlign.center),
-                                        ));
-                                  }).toList(),
-                                  onChanged: (String? value) {
-                                    provider.onSelected(value);
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> SmileScreen(category: value,pageName: provider.nameOfCategory,) ));
+                                            ));
+                                      }).toList(),
+                                      onChanged: (String? value) {
+                                        provider.onSelected(value);
 
-
-                                  },
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SmileScreen(
+                                                      category: value,
+                                                      pageName: provider
+                                                          .nameOfCategory,
+                                                      audioPlayer: value == "30"
+                                                          ? true
+                                                          : false,
+                                                      image: provider.imageAddress,
+                                                    )));
+                                      },
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ))
-                      ],
-                    ),
-                  )
-
-
-                ],
+                              ))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],
@@ -221,7 +227,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Future<void> _signOut() async {
     SharedPref.clearSharePref();
 
-    Navigator.pushNamed(context, RoutesConstants.logInScreen);
+    Navigator.pushNamedAndRemoveUntil(
+        context, RoutesConstants.logInScreen, (Route<dynamic> route) => false);
     DialogHelper.showMessage(context, 'Sign Out successfully');
   }
 }

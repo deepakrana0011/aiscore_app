@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 class GetScore {
   bool success;
@@ -24,8 +24,10 @@ class GetScoreData {
   double category;
   int testType;
   int time;
-  int angleScore;
-  int totalScore;
+  String wrongImage;
+  double angleScore;
+  double totalScore;
+  int round;
   int v;
   GetScoreData(
       {required this.id,
@@ -34,8 +36,9 @@ class GetScoreData {
       required this.testType,
       required this.time,
       required this.angleScore,
-      required this.totalScore,
-      required this.v});
+      required this.totalScore, required this.round,
+      required this.v, required this.wrongImage
+      });
 
   factory GetScoreData.fromJson(Map<String, dynamic> json) => GetScoreData(
       id: json["_id"],
@@ -43,8 +46,10 @@ class GetScoreData {
       category: json["category"],
       testType: json["testType"],
       time: json["time"],
+      wrongImage: json["wrongImage"],
       angleScore: json["angleScore"],
       totalScore: json["totalScore"],
+      round: json["round"],
       v: json["__v"]);
 
   Map<String, dynamic> toJson() => {
@@ -52,9 +57,11 @@ class GetScoreData {
         "student": studentId,
         "category": category,
         "testType": testType,
+        "wrongImage": wrongImage,
         "time": time,
         "angleScore": angleScore,
         "totalScore": totalScore,
+        "round":round,
         "__v": v,
       };
 }

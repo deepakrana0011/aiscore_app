@@ -1,7 +1,9 @@
 
+import 'package:ai_score/services/api.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,10 +16,18 @@ List<CameraDescription>? cameras;
 
 
 Future<void> main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   SharedPref.prefs = await SharedPreferences.getInstance();
   cameras = await availableCameras();
+  setUpLocator();
+
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
 
   runApp(
     EasyLocalization(
@@ -29,7 +39,6 @@ Future<void> main() async {
         child:  MyApp()),
   );
 
-  setUpLocator();
 }
 
 class MyApp extends StatelessWidget {

@@ -25,9 +25,10 @@
   "no": "NO",
   "time": "Time",
   "category":"Category",
-  "wrongActionPicture": "Wrong Action Picture",
+  "actionPicture": "Action Picture",
   "score":"Score",
-  "round": "Round"
+  "round": "Round",
+  " waitForTeacherToApproveYourRequest": " Wait for teacher to approve your request"
 
 
 

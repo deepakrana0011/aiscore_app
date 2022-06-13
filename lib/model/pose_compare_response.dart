@@ -14,7 +14,7 @@ class PoseCompareResponse{
 
 class Data{
   String? badPoses;
-  List<int>? scores = [];
+  List<dynamic>? scores = [];
 
   Data.fromJson(Map<String, dynamic> parsedJson){
     badPoses = parsedJson['bad_poses'];

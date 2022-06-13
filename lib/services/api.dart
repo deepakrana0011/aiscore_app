@@ -10,6 +10,7 @@ import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:video_compress/video_compress.dart';
 
 import '../constants/api_constants.dart';
 import '../helper/shared_pref.dart';
@@ -39,7 +40,7 @@ class Api {
         var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
-        throw SocketException(" ");
+        throw SocketException("did not get score try again");
       }
     }
   }
@@ -62,13 +63,13 @@ class Api {
         var errorMeaasge = errorData["message"];
         throw FetchDataException(errorMeaasge);
       } else {
-        throw const SocketException("");
+        throw const SocketException("did not get score try again");
       }
     }
   }
 
-  Future<AddScoreResponse> addscore(
-      BuildContext context, String category, int time,String pose,String score) async {
+  Future<AddScoreResponse> addScoreVideo(BuildContext context, String category,
+      int time, String pose, String score) async {
     try {
       dio.options.headers["Authorization"] =
           "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
@@ -76,10 +77,9 @@ class Api {
         "studentId": SharedPref.prefs!.getString(SharedPref.ID),
         "category": category,
         "time": time,
-        "image":pose,
-        "score":score
+        "image": pose,
+        "score": score
       };
-
       var response = await dio
           .post(ApiConstants.BASEURL + ApiConstants.ADDSCORE, data: map);
       return AddScoreResponse.fromJson(json.decode(response.toString()));
@@ -89,7 +89,7 @@ class Api {
         var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
-        throw SocketException("");
+        throw SocketException("did not get score try again");
       }
     }
   }
@@ -114,7 +114,7 @@ class Api {
         var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
-        throw SocketException("");
+        throw SocketException("did not get score try again");
       }
     }
   }
@@ -138,14 +138,19 @@ class Api {
         var errorMessage = errorData["message"];
         throw FetchDataException(errorMessage);
       } else {
-        throw SocketException("");
+        throw const SocketException("did not get score try again");
       }
     }
   }
 
   Future<UploadVideoResponse> uploadVideo(XFile video) async {
     try {
-      Uint8List bytes = await video.readAsBytes();
+      final MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+        video.path,
+        quality: VideoQuality.LowQuality,
+      );
+
+      Uint8List bytes = await mediaInfo!.file!.readAsBytes();
       dio.options.headers["Authorization"] =
           "Bearer " + SharedPref.prefs!.getString(SharedPref.TOKEN).toString();
       var videoDocument =
@@ -154,7 +159,7 @@ class Api {
       var response = await dio.post(
           ApiConstants.BASEURL + ApiConstants.UPLOADVIDEO,
           data: FormData.fromMap(videoMap));
-      var responseString = response.toString();;
+      // var responseString = response.toString();
       return UploadVideoResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -162,7 +167,7 @@ class Api {
         var errorMessage = errorData["error"];
         throw FetchDataException(errorMessage);
       } else {
-        throw const SocketException("");
+        throw const SocketException("did not get score try again");
       }
     }
   }
@@ -183,7 +188,7 @@ class Api {
         var errorMessage = errorData["message"];*/
         throw FetchDataException("Didn't get the score. Please try again");
       } else {
-        throw const SocketException("");
+        throw const SocketException("did not get score try again");
       }
     }
   }

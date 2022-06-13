@@ -9,6 +9,7 @@ class CategoryScreenProvider extends BaseProvider{
   String categoryDropDownValue = "";
   String nameOfCategory ="";
   String? categoryDropDownValueId;
+  String? imageAddress ;
 
   getCategoryData() {
     var response = CategoryListModel.fromJson(categoryData);
@@ -19,12 +20,7 @@ class CategoryScreenProvider extends BaseProvider{
     categoryDropDownValue = value;
     notifyListeners();
   }
-
-
-
-
-
-
-
-
 }
+
+
+

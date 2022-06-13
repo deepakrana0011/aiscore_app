@@ -1,5 +1,9 @@
+import 'dart:convert';
 
+import 'dart:io' as Io;
+import 'dart:typed_data';
 
+import 'package:ai_score/constants/api_constants.dart';
 import 'package:ai_score/constants/color_constants.dart';
 import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/constants/image_constants.dart';
@@ -29,7 +33,7 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
   @override
   Widget build(BuildContext context) {
     return BaseView<ScoreAnalyticsProvider>(onModelReady: (provider) {
-      provider.getScoreData(context, "", "");
+      provider.getScoreData(context, "1.1", "");
       provider.getCategoryData();
       provider.getCategoryName('smile');
     }, builder: (context, provider, _) {
@@ -113,7 +117,7 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                 ),
                 child: CustomShape(
                   bgColor: ColorConstants.whiteColor,
-                  height: DimensionConstants.d48.h,
+                  height: DimensionConstants.d70.h,
                   width: DimensionConstants.d374.w,
                   radius: BorderRadius.all(
                     Radius.circular(DimensionConstants.d10.r),
@@ -125,14 +129,14 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                           left: DimensionConstants.d20.w,
                         ),
                         child: Text("no".tr()).boldText(
-                            ColorConstants.textGrayColor,
+                            ColorConstants.primaryColor,
                             DimensionConstants.d12.sp,
                             TextAlign.left),
                       ),
                       SizedBox(
                         width: DimensionConstants.d24.w,
                       ),
-                      Text("time".tr()).boldText(ColorConstants.textGrayColor,
+                      Text("time".tr()).boldText(ColorConstants.primaryColor,
                           DimensionConstants.d12.sp, TextAlign.left),
                       SizedBox(
                         width: DimensionConstants.d24.w,
@@ -141,13 +145,13 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                         child: DropdownButton(
                           menuMaxHeight: DimensionConstants.d600.h,
                           style: TextStyle(
-                            color: ColorConstants.textGrayColor,
+                            color: ColorConstants.primaryColor,
                             fontSize: DimensionConstants.d12.sp,
                           ),
-                          iconEnabledColor: ColorConstants.textGrayColor,
-                          iconDisabledColor: ColorConstants.textGrayColor,
+                          iconEnabledColor: ColorConstants.primaryColor,
+                          iconDisabledColor: ColorConstants.primaryColor,
                           hint: Text("Category".tr()).boldText(
-                              ColorConstants.textGrayColor,
+                              ColorConstants.primaryColor,
                               DimensionConstants.d12.sp,
                               TextAlign.left),
                           value: provider.categoryDropDownValue,
@@ -158,29 +162,29 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                               onTap: () {
                                 provider.categoryDropDownValueId =
                                     item.categoryName.toString();
-                                provider.getScoreData(
-                                    context,
-                                    item.categoryNumber.toString(),
-                                    provider.selectScore.toString());
+                                provider.getScoreData(context,
+                                    item.categoryNumber.toString(), "");
                                 provider.getCategoryName(
                                     item.categoryName.toString());
                               },
                               value: item.categoryNumber,
-                              child: Text(item.categoryName.toString()),
+                              child: Text(item.categoryName.toString()).boldText(ColorConstants.primaryColor,
+                                  DimensionConstants.d13.sp, TextAlign.center),
                             );
                           }).toList(),
                           onChanged: (String? value) {
                             provider.onSelected(value);
+
                           },
                         ),
                       ),
                       SizedBox(
-                        width: DimensionConstants.d20.w,
+                        width: DimensionConstants.d30.w,
                       ),
                       Expanded(
                         flex: 1,
-                        child: Text("wrongActionPicture".tr()).boldText(
-                            ColorConstants.textGrayColor,
+                        child: Text("actionPicture".tr()).boldText(
+                            ColorConstants.primaryColor,
                             DimensionConstants.d12.sp,
                             TextAlign.center,
                             maxLines: 2,
@@ -190,28 +194,18 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                         width: DimensionConstants.d20.w,
                       ),
                       GestureDetector(
-                        onTap: (){
-                          if(provider.tap == false ){
-
-                            provider.values.sort();
-
-
-                          }else if(provider.tap == true ){
-
-                            provider.values = List.from(provider.values.reversed);
-
-                          }
+                        onTap: () {
                           provider.changeTap();
-
-
+                          provider.sortList();
                         },
-
-
-                        child: Text("score".tr()).boldText(ColorConstants.textGrayColor, DimensionConstants.d12.sp, TextAlign.center),
+                        child: Text("score".tr()).boldText(
+                            ColorConstants.primaryColor,
+                            DimensionConstants.d12.sp,
+                            TextAlign.center),
+                      ),
+                      SizedBox(
+                        width: DimensionConstants.d15.w,
                       )
-
-                      ,
-                      SizedBox(width: DimensionConstants.d15.w,)
                       /*DropdownButtonHideUnderline(
                         child: DropdownButton(
                           style: TextStyle(
@@ -264,12 +258,15 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
                             scrollDirection: Axis.vertical,
                             itemCount: provider.itemsOfList.length,
                             itemBuilder: (BuildContext context, int index) {
+
                               String? seconds;
                               int minutes;
                               double remainder;
                               String focus;
+                              Uint8List bytes = const Base64Codec().decode(
+                                  provider.itemsOfList[index].wrongImage);
                               if (provider.itemsOfList[index].time == 60) {
-                                seconds = "01:00";
+                                seconds = "01:00" "";
                               } else if (provider.itemsOfList[index].time <
                                   10) {
                                 seconds = "00:" "0" +
@@ -287,58 +284,58 @@ class _ScoreAnalyticsState extends State<ScoreAnalytics> {
 
                                 seconds = "0" "$focus" ":" "$minutes";
                               }
-                              return Container(
+                              return SizedBox(
                                   height: DimensionConstants.d55.h,
                                   width: MediaQuery.of(context).size.width,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text("${index + 1}").boldText(
-                                          ColorConstants.blackColor,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.center),
-                                      SizedBox(
-                                        width: DimensionConstants.d28.w,
-                                      ),
-                                      Text("$seconds").boldText(
-                                          ColorConstants.blackColor,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.center),
-                                      SizedBox(
-                                        width: DimensionConstants.d34.w,
-                                      ),
-                                      Text(provider.listName.toString())
-                                          .boldText(
-                                              ColorConstants.blackColor,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.center),
-                                      SizedBox(
-                                        width: DimensionConstants.d80.w,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          DialogHelper
-                                              .showDialogWithSingleImage(
-                                                  context,
-                                                  ImagesConstants.appIcon);
-                                        },
-                                        child: ImageView(
-                                          path: ImagesConstants.listImage,
-                                          height: DimensionConstants.d49.h,
-                                          width: DimensionConstants.d49.w,
-                                          fit: BoxFit.cover,
+                                  child: SingleChildScrollView(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(provider.itemsOfList[index].round.toString()).boldText(
+                                            ColorConstants.blackColor,
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.center),
+                                        SizedBox(
+                                          width: DimensionConstants.d28.w,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: DimensionConstants.d40.w,
-                                      ),
-                                      Text(provider.values[index].toString())
-                                          .boldText(
-                                              ColorConstants.blackColor,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.center),
-                                    ],
+                                        Text("$seconds").boldText(
+                                            ColorConstants.blackColor,
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.center),
+                                        SizedBox(
+                                          width: DimensionConstants.d34.w,
+                                        ),
+                                        Text(provider.listName.toString())
+                                            .boldText(
+                                                ColorConstants.blackColor,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center),
+                                        SizedBox(
+                                          width: DimensionConstants.d40.w,
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              DialogHelper.showDialogImage(context, bytes);
+                                            },
+                                            child: Image.memory(
+                                              bytes,
+                                              height: DimensionConstants.d49.h,
+                                              width: DimensionConstants.d49.w,
+                                              fit: BoxFit.fill,
+                                            )),
+                                        SizedBox(
+                                          width: DimensionConstants.d25.w,
+                                        ),
+                                        Text(provider.itemsOfList[index].totalScore
+                                                .toStringAsPrecision(3)
+                                                .toString())
+                                            .boldText(
+                                                ColorConstants.blackColor,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center),
+                                      ],
+                                    ),
                                   ));
                             },
                           ),

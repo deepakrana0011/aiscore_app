@@ -1,9 +1,6 @@
 import 'package:ai_score/constants/dimension_constants.dart';
 import 'package:ai_score/constants/image_constants.dart';
 import 'package:ai_score/extensions/allextensions.dart';
-import 'package:ai_score/model/dialogbox_model.dart';
-import 'package:ai_score/model/list_model.dart';
-import 'package:ai_score/widgets/custom_shape.dart';
 import 'package:ai_score/widgets/image_view.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -170,7 +167,41 @@ class DialogHelper {
           ),
         );
       },
-    );
+    );}
+    static Future showDialogImage(
+        BuildContext context,
+        bytes,
+
+        ) {
+      return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext buildContext) {
+          return AlertDialog(
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 150.0,
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(Radius.circular(DimensionConstants.d20.r))),
+            title:  Text("actionPicture".tr()).boldText(ColorConstants.blackColor,
+                DimensionConstants.d22.sp, TextAlign.center),
+            content: Container(
+                width: DimensionConstants.d375.w,
+                height: DimensionConstants.d293.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: SizedBox(
+                  width: DimensionConstants.d370.w,
+                  height: DimensionConstants.d290.h,
+                  child:Image.memory(bytes,fit: BoxFit.fitHeight,)
+                )
+            ),
+          );
+        },
+      );
   }
 
 

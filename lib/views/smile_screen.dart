@@ -5,6 +5,7 @@ import 'package:ai_score/enum/viewstate.dart';
 import 'package:ai_score/extensions/allextensions.dart';
 import 'package:ai_score/provider/smile_screen_provider.dart';
 import 'package:ai_score/views/base_view.dart';
+import 'package:ai_score/widgets/image_view.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,11 @@ import '../main.dart';
 class SmileScreen extends StatefulWidget {
   String? category;
   String? pageName;
+  bool? audioPlayer = false;
+  String? image;
 
-  SmileScreen({Key? key, this.category, this.pageName}) : super(key: key);
+  SmileScreen({Key? key, this.category, this.pageName, this.audioPlayer,this.image})
+      : super(key: key);
 
   @override
   _SmileScreenState createState() => _SmileScreenState();
@@ -30,21 +34,27 @@ class _SmileScreenState extends State<SmileScreen>
   SmileScreenProvider? provider;
 
   @override
+  void dispose() {
+    provider!.stopPlayer();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    /*widget.category;
-    widget.pageName;*/
     return BaseView<SmileScreenProvider>(
       onModelReady: (provider) async {
+        provider.getLastScoreData(
+          context,
+          widget.category.toString(),
+        );
         this.provider = provider;
-        controller = CameraController(cameras![0], ResolutionPreset.max);
+        controller = CameraController(cameras![0], ResolutionPreset.low);
         controller!.initialize().then((_) {
           if (!mounted) {
             return;
           }
           provider.updateData(true);
         });
-
-        await provider.getLastScoreData(context, widget.category.toString(),showLoader: true);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -110,7 +120,7 @@ class _SmileScreenState extends State<SmileScreen>
                               child: SizedBox(
                                 height: DimensionConstants.d523.h,
                                 width: DimensionConstants.d348.w,
-                                child: _cameraPreviewWidget(),
+                                child: provider.imageOnCamera == true ? _cameraPreviewWidget():ImageView(path: widget.image,height: DimensionConstants.d523.h, width: DimensionConstants.d348.w,fit: BoxFit.fill,),
                               ),
                             ),
                           ),
@@ -149,49 +159,35 @@ class _SmileScreenState extends State<SmileScreen>
                                 onToggle: (index) {
                                   provider.updateSelectedState(index!);
                                   if (index == 0) {
-                                    controller != null &&
-                                            controller!.value.isInitialized &&
-                                            !controller!.value.isRecordingVideo
+                                    controller != null && controller!.value.isInitialized && !controller!.value.isRecordingVideo
                                         ? startVideoRecording().then((_) {
                                             if (mounted) {
                                               twoMinTimer();
+                                              provider.secondsCount;
+                                              provider.minuteCount;
                                               provider.updateData(true);
                                             }
                                           })
                                         : null;
                                   } else {
-                                    if (provider.secondsCount == 0 &&
-                                        provider.minuteCount == 0) {
-                                    } else {
-                                     /* provider.addscore(
-                                        context,
-                                        widget.category.toString(),
-                                        provider.minuteCount +
-                                            provider.secondsCount,
-                                      );*/
-                                      /*Timer(const Duration(milliseconds: 400), () {
-                                        provider.getLastScoreData(
-                                            context, widget.category.toString());
-
-                                      });*/
-
-                                    }
                                     controller != null &&
                                             controller!.value.isInitialized &&
                                             controller!.value.isRecordingVideo
                                         ? stopVideoRecording()
                                             .then((XFile? file) async {
                                             if (file != null) {
-                                              provider.secondsCount = 0;
-                                              provider.minuteCount = 0;
+                                              provider.secondsCount;
+                                              provider.minuteCount;
                                               provider.timer?.cancel();
-                                              provider.uploadVideo(
+                                              await provider.uploadVideo(
                                                   context,
                                                   file,
                                                   widget.category.toString(),
                                                   provider.minuteCount +
                                                       provider.secondsCount);
                                             }
+                                            provider.secondsCount = 0;
+                                            provider.minuteCount = 0;
                                           })
                                         : null;
                                   }
@@ -217,63 +213,71 @@ class _SmileScreenState extends State<SmileScreen>
                             color: ColorConstants.primaryColor,
                             child: Row(
                               children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Padding(
+                                Expanded(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: DimensionConstants.d20.w,
+                                            top: DimensionConstants.d7.h),
+                                        child: Text("round".tr()).boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: DimensionConstants.d20.w,
+                                            top: DimensionConstants.d2.h),
+                                        child: Text(provider.round.toString())
+                                            .boldText(
+                                                ColorConstants.whiteColor,
+                                                DimensionConstants.d20.sp,
+                                                TextAlign.center),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Padding(
                                       padding: EdgeInsets.only(
-                                          left: DimensionConstants.d20.w,
-                                          top: DimensionConstants.d7.h),
-                                      child: Text("round".tr()).boldText(
-                                          ColorConstants.whiteColor,
-                                          DimensionConstants.d20.sp,
-                                          TextAlign.center),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: DimensionConstants.d20.w,
-                                          top: DimensionConstants.d2.h),
-                                      child: Text(provider.round.toString())
+                                          top: DimensionConstants.d17.h,
+                                          left: DimensionConstants.d60.w,
+                                          bottom: DimensionConstants.d39.h),
+                                      child: Text(
+                                              "0${provider.minuteCount.toString()} : ${(provider.secondsCount <= 9) ? "0${provider.secondsCount.toString()}" : provider.secondsCount.toString()}")
                                           .boldText(
                                               ColorConstants.whiteColor,
                                               DimensionConstants.d20.sp,
-                                              TextAlign.center),
-                                    ),
-                                  ],
+                                              TextAlign.center)),
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: DimensionConstants.d17.h,
-                                        left: DimensionConstants.d50.w,
-                                        bottom: DimensionConstants.d39.h),
-                                    child: Text(
-                                            "0${provider.minuteCount.toString()} : ${(provider.secondsCount <= 9) ? "0${provider.secondsCount.toString()}" : provider.secondsCount.toString()}")
-                                        .boldText(
-                                            ColorConstants.whiteColor,
-                                            DimensionConstants.d20.sp,
-                                            TextAlign.center)),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: DimensionConstants.d17.h,
-                                        left: DimensionConstants.d35.w,
-                                        bottom: DimensionConstants.d43.h),
-                                    child: Text(
-                                            provider.totalScoreGet.isNotEmpty
-                                                ? provider.totalScoreGet[0]
-                                                    .toString()
-                                                : "")
-                                        .boldText(
-                                            ColorConstants.whiteColor,
-                                            DimensionConstants.d20.sp,
-                                            TextAlign.center)),
-                                Padding(
+                                Expanded(
+                                  flex: 2,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(
+                                          top: DimensionConstants.d17.h,
+                                          left: DimensionConstants.d35.w,
+                                          bottom: DimensionConstants.d43.h),
+                                      child: Text(
+                                              provider.totalScores.isNotEmpty
+                                                  ? provider
+                                                      .totalScores[0].totalScore
+                                                      .toStringAsPrecision(3)
+                                                  : "")
+                                          .boldText(
+                                              ColorConstants.whiteColor,
+                                              DimensionConstants.d20.sp,
+                                              TextAlign.center)),
+                                ),
+                                /*     Padding(
                                     padding: EdgeInsets.only(
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(
+                                    child:  Text(
                                             provider.totalScoreGet.length > 1
-                                                ? provider.totalScoreGet[1]
-                                                    .toString()
+                                                ? provider.totalScoreGet[1].toStringAsFixed(0)
                                                 : "")
                                         .boldText(
                                             ColorConstants.whiteColor,
@@ -284,15 +288,14 @@ class _SmileScreenState extends State<SmileScreen>
                                         top: DimensionConstants.d17.h,
                                         left: DimensionConstants.d35.w,
                                         bottom: DimensionConstants.d43.h),
-                                    child: Text(
+                                    child:  Text(
                                             provider.totalScoreGet.length > 2
-                                                ? provider.totalScoreGet[2]
-                                                    .toString()
-                                                : "")
+                                                ? provider.totalScoreGet[2].toStringAsFixed(0)
+                                                : " ")
                                         .boldText(
                                             ColorConstants.whiteColor,
                                             DimensionConstants.d20.sp,
-                                            TextAlign.center)),
+                                            TextAlign.center)),*/
                               ],
                             ),
                           ))
@@ -323,27 +326,28 @@ class _SmileScreenState extends State<SmileScreen>
         if (provider?.secondsCount == 60 && provider?.minuteCount == 1) {
           provider?.minuteCount = 2;
           provider?.secondsCount = 0;
-          if (provider?.secondsCount == 0 && provider?.minuteCount == 2) {
-            DialogHelper.showMessage(
-                context, "Sorry, Video record cannot be more than 2 minutes.");
-            stopVideoRecording().then((XFile? file) async {
-              if (mounted) {
-                provider?.updateData(true);
-              }
-              if (file != null) {
-                provider?.secondsCount = 0;
-                provider?.minuteCount = 0;
-                provider?.timer?.cancel();
-                await provider?.uploadVideo(context, file,widget.category.toString(),
-                    provider!.minuteCount +
-                        provider!.secondsCount);
-              }
-            });
-            timer.cancel();
-          }
         } else if (provider?.secondsCount == 60 && provider?.minuteCount == 0) {
           provider?.secondsCount = 0;
           provider?.minuteCount = 1;
+        } else if (provider?.secondsCount == 38 && provider?.minuteCount == 2) {
+          DialogHelper.showMessage(
+              context, "Sorry, Video record cannot be more than 2:38 Seconds.");
+          stopVideoRecording().then((XFile? file) async {
+            if (mounted) {
+              provider?.updateData(true);
+            }
+            if (file != null) {
+              provider?.secondsCount = 0;
+              provider?.minuteCount = 0;
+              provider?.timer?.cancel();
+              await provider?.uploadVideo(
+                  context,
+                  file,
+                  widget.category.toString(),
+                  provider!.minuteCount + provider!.secondsCount);
+            }
+          });
+          timer.cancel();
         }
         provider?.updateData(true);
       },
@@ -464,6 +468,7 @@ class _SmileScreenState extends State<SmileScreen>
 */
   Future<void> startVideoRecording() async {
     final CameraController? cameraController = controller;
+    widget.audioPlayer == true ? provider!.startPlayer() : null;
 
     if (cameraController == null || !cameraController.value.isInitialized) {
       showInSnackBar('Error: select a camera first.');
@@ -485,6 +490,7 @@ class _SmileScreenState extends State<SmileScreen>
 
   Future<XFile?> stopVideoRecording() async {
     final CameraController? cameraController = controller;
+    widget.audioPlayer == true ? provider!.audioPlayer.stop() : null;
 
     if (cameraController == null || !cameraController.value.isRecordingVideo) {
       return null;

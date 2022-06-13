@@ -13,9 +13,11 @@ class CategoryListModel {
 class CategoryList {
   String? categoryName;
   String? categoryNumber;
+  String? image;
 
   CategoryList.fromJson(Map<String, dynamic> parsedJson) {
     categoryName = parsedJson['category'];
     categoryNumber = parsedJson['categoryNo'];
+    image = parsedJson['image'];
   }
 }

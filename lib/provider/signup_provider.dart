@@ -6,6 +6,7 @@ import 'package:ai_score/helper/dialog_helper.dart';
 import 'package:ai_score/provider/base_provider.dart';
 import 'package:ai_score/helper/save_token.dart';
 import 'package:ai_score/services/FetchDataExpection.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -40,6 +41,8 @@ class SignUpProvider extends BaseProvider {
         SharedPref.prefs!.setString(SharedPref.ID, model.data!.id);
         saveToken.id = model.data!.id;
         saveToken.checkLogin = false;
+        Navigator.of(context).pushNamed(RoutesConstants.logInScreen);
+        DialogHelper.showMessage(context, model.message +" waitForTeacherToApproveYourRequest".tr());
         if (model.data!.status == 1) {
           SharedPref.prefs?.setString(SharedPref.TOKEN, model.data!.token);
           SharedPref.prefs?.setString(SharedPref.ID, model.data!.id);
@@ -50,6 +53,7 @@ class SignUpProvider extends BaseProvider {
           Navigator.pushNamedAndRemoveUntil(context,
               RoutesConstants.categoryScreen, (Route<dynamic> route) => false,
               arguments: true);
+          DialogHelper.showMessage(context, model.message);
         }
         return false;
       } else {

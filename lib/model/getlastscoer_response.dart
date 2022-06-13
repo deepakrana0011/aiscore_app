@@ -32,7 +32,7 @@ class Data {
 class ScoresList {
   String id;
   String id2;
-  int totalScore;
+  double totalScore;
   ScoresList({required this.id, required this.totalScore,required this.id2});
   factory ScoresList.fromJson(Map<String, dynamic> json) => ScoresList(
         id: json['id'],
@@ -42,7 +42,7 @@ class ScoresList {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-    "_id":id2,
+        "_id":id2,
         "totalScore": totalScore,
       };
 }

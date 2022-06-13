@@ -65,7 +65,6 @@ class LoginProvider extends BaseProvider {
 
   visiblePassword() {
     isPasswordVisible = !isPasswordVisible;
-
     notifyListeners();
   }
 }
